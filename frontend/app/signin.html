@@ -1,0 +1,38 @@
+<div id="content">
+  <div style="padding-top: 60px; width: 322px; margin: 0 auto 0 auto;">
+    <div style="text-align: center;">
+      <img src="/app/img/vtc.svg" style="width: 66px;"><br>
+      <span style="font-size: 2em;">Virtual Test Center</span>
+      <br><br><br>
+      <img src="/app/img/dtechta.png" style="width: 150px;">
+    </div>
+  </div>
+  <div style="padding-top: 25px; max-width: 350px; margin: 0 auto;">
+    <div id="login" class="panel animated bounceIn shadow">
+      <div class="panel-body">
+        <form>
+          <div class="form-group">
+            <label class="control-label" for="language">{{locals.language}}</label>
+            <select class="form-control js-language">
+              <option value="en" {{#is language "en"}}selected{{/is}}>{{locals.en}}</option>
+              <option value="pt-br" {{#is language "pt-br"}}selected{{/is}}>{{locals.pt_br}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="control-label" for="username">{{locals.username}}</label>
+            <input id="username" type="text" title="{{locals.type_username}}" placeholder="user@domain.com" required="" value="" name="username" class="form-control">
+          </div>
+          <div class="form-group">
+            <a class="btn-link" href="#" style="float: right;">{{locals.forgot_password}}</a>
+            <label class="control-label" for="password">{{locals.password}}</label>
+            <input id="password" type="password" title="{{locals.type_password}}" placeholder="******" required="" value="" name="password" class="form-control">
+          </div>
+          <button type="button" class="js-signin btn btn-primary btn-block">{{locals.signin}}</button>
+        </form>
+      </div>
+    </div>
+    <div style="width: 175px; margin: 0 auto;">
+      <img src="/app/img/browsers.png" style="height: 35px;">
+    </div>
+  </div>
+</div>

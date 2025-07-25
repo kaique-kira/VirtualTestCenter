@@ -1,0 +1,122 @@
+<div class="modal-dialog modal-info modal-lg" role="document">
+  <div class="modal-content">
+    <div class="color-line"></div>
+    <div class="modal-header">
+      <h4 class="modal-title">{{@root.locals.txn_modal.title}}</h4>
+    </div>
+    {{#if execution}}
+    <div class="execution" data-id="{{execution._id}}">
+      <a href="#" class="js-open-execution list-item">
+        <div class="modal-body">
+          <div class="bg-green" style="top: 0; left: 0; bottom: 0; width: 6px; position: absolute;"></div>
+          <span>{{execution.test.label}} | {{execution.username}}</span>
+          <div class="pull-right">
+            <span class="label label-default">{{moment execution.created format="L LTS"}}</span>
+          </div>
+        </div>
+      </a>
+    </div>
+    {{/if}}
+    <div id="modal-content" class="modal-body">
+      <div style="display: flex;">
+        {{#with txn}}
+        <div style="width: 80px; font-size: 56px;">
+          <span><i class="{{> txnIcon}}"></i></span>
+        </div>
+        <div style="flex-grow: 1;">
+          <dl>
+            {{#if status}}<dd><span class="label {{#is status 'error'}}label-danger{{else}}label-primary{{/is}}">{{> txnStatus}}</span></dd>{{/if}}
+            <dt>{{@root.locals.address}} ({{#if response.chained}}{{@root.locals.source}}{{else}}{{@root.locals.local}}{{/if}})</dt>
+            <dd>{{hostType}}://{{localAddress}}:{{localPort}} [{{messageType}}, {{encoding}}]</dd>
+            <dt>{{@root.locals.address}} ({{@root.locals.remote}})</dt>
+            <dd>{{hostType}}://{{remoteAddress}}:{{remotePort}}</dd>
+            <dd>{{#if internalTime}}<span class="label label-info" title="{{@root.locals.processing_time}}">{{internalTime}} ms</span>{{/if}}</dd>
+          </dl>
+        </div>
+        {{/with}}
+      </div>
+      {{#if txn.log}}
+      <strong>{{@root.locals.log}}:</strong>
+      <table class="table">
+        <tbody style="border-top: 2px solid #ddd;">
+          {{#each txn.log}}
+          <tr>
+            <td style="width: 30px; padding: 0;">
+              <i class="{{#is level 'ERR'}}pe-7s-close-circle text-danger{{/is}}{{#is level 'WARN'}}pe-7s-angle-right-circle text-warning{{/is}}{{#is level 'INFO'}}pe-7s-less text-info{{/is}}" style="padding: 6px 4px; font-size: 20px; font-weight: 600;"></i>
+            </td>
+            <td class="{{#is level 'ERR'}}text-danger{{/is}}{{#is level 'WARN'}}text-warning{{/is}}{{#is level 'INFO'}}text-info{{/is}}">{{message}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      {{/if}}
+      <div class="request">
+        <strong>{{@root.locals.request}}:</strong><br>
+        <span class="label label-default">{{moment txn.request.instant format="L LTS"}}</span>
+        <code style="display: block; white-space: pre-wrap; word-break: break-all;"><span style="background-color: aliceblue;">{{txn.request.data}}</span></code>
+        {{#if txn.request.fields}}
+        <table class="table" style="margin-bottom: 10px">
+          <thead>
+            <tr>
+              <th>{{@root.locals.field}}</th>
+              <th>{{@root.locals.value}}</th>
+            </th>
+          </thead>
+          <tbody class="fields">
+            {{#each txn.request.fields}}
+            <tr class="validation" data-result="{{result}}">
+              <td><div class="text-ellipsis"><span>{{name}}{{field}}</span></div></td>
+              <td><span class="text-ellipsis">{{value}}</span></td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        {{/if}}
+      </div>
+      <div class="response">
+        <strong>{{@root.locals.response}}:</strong><br>
+        {{#if txn.response.instant}}<span class="label label-default">{{moment txn.response.instant format="L LTS"}}</span>{{/if}}
+        <code style="display: block; white-space: pre-wrap; word-break: break-all;"><span style="background-color: aliceblue;">{{#unless txn.response.data}}{{@root.locals.no_results}}{{/unless}}{{txn.response.data}}</span></code>
+        {{#if txn.response.fields}}
+        <table class="table" style="margin-bottom: 10px">
+          <thead>
+            <tr>
+              <th>{{@root.locals.field}}</th>
+              <th>{{@root.locals.value}}</th>
+            </th>
+          </thead>
+          <tbody class="fields">
+            {{#each txn.response.fields}}
+            <tr class="validation" data-result="{{result}}">
+              <td><div class="text-ellipsis"><span>{{name}}{{field}}</span></div></td>
+              <td><span class="text-ellipsis">{{value}}</span></td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        {{/if}}
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">{{@root.locals.close}}</button>
+    </div>
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "txnIcon"}}
+  {{#is type "inbound"}}{{#if response.chained}}pe-7s-shuffle{{else}}pe-7s-cloud-upload{{/if}}{{/is}}
+  {{#is type "outbound"}}pe-7s-cloud-download{{/is}}
+  {{/inline}}
+  {{#*inline "txnStatus"}}
+  {{#is status "created"}}{{@root.locals.txn-status.created}}{{/is}}
+  {{#is status "received"}}{{@root.locals.txn-status.received}}{{/is}}
+  {{#is status "match"}}{{@root.locals.txn-status.match}}{{/is}}
+  {{#is status "delay"}}{{@root.locals.txn-status.delay}}{{/is}}
+  {{#is status "request"}}{{@root.locals.txn-status.request}}{{/is}}
+  {{#is status "chaining"}}{{@root.locals.txn-status.chaining}}{{/is}}
+  {{#is status "chained"}}{{@root.locals.txn-status.chained}}{{/is}}
+  {{#is status "responded"}}{{@root.locals.txn-status.responded}}{{/is}}
+  {{#is status "finished"}}{{@root.locals.txn-status.finished}}{{/is}}
+  {{#is status "error"}}{{@root.locals.txn-status.error}}{{/is}}
+  {{/inline}}
+</script>

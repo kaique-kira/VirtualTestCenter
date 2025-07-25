@@ -1,0 +1,131 @@
+<div class="wrapper">
+  <div class="header animated fadeIn">
+    <div class="panel">
+      <div class="panel-body">
+        <div class="pull-right actions">
+          <input class="inline js-search" type="text" placeholder="{{locals.search}}"/>
+          {{#if @root.show.createCtrls}}
+          <div class="dropdown">
+            <button class="btn btn-primary" data-toggle="dropdown">{{locals.create}}&nbsp;<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li><a href="#" class="js-create-scenario">{{@root.locals.scenario}}</a></li>
+              <li><a href="#" class="js-create-test">{{@root.locals.test}}</a></li>
+            </ul>
+          </div>
+          {{/if}}
+        </div>
+        <h2 class="font-light">{{locals.tests}}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="scenarios animate-panel">
+    {{#if scenario}}
+    {{#with scenario}}{{> scenario}}{{/with}}
+    {{else}}
+    {{#each scenarios}}
+    {{> scenario}}
+    {{/each}}
+    {{/if}}
+  </div>
+  <div class="tests list-group">
+    {{#each tests}}
+    {{> test}}
+    {{/each}}
+  </div>
+  {{#unless tests}}
+  <div class="list-group-item">
+    <span>{{@root.locals.no_results}}<span>
+  </div>
+  {{/unless}}
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "scenario"}}
+  <div class="scenario panel" data-id="{{_id}}">
+    <div class="panel-heading panel-built">
+      {{#if @root.show.createCtrls}}
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#/scenario/{{_id}}">{{@root.locals.edit}}</a></li>
+          <li class="divider"></li>
+          <li><a href="#" class="js-remove-scenario">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+      {{/if}}
+      <span class="data-name">{{name}}</span>
+    </div>
+    {{#if @root.scenario}}
+    <div class="panel-body">
+    <span class="data-desc">{{marked description}}</span>
+    </div>
+    {{else}}
+    <a href="#/tests?scenario={{_id}}" class="list-item">
+      <div class="panel-body">
+        <span>{{marked _descriptionHeading}}</span>
+        <span>.&nbsp;.&nbsp;.</span>
+      </div>
+    </a>
+    {{/if}}
+    {{#if @root.show.execCtrls}}
+    <div class="panel-footer">
+      <div class="btn-group">
+        <a href="#" class="btn btn-primary js-execute-scenario">{{@root.locals.execute}}</a>
+      </div>
+    </div>
+    {{/if}}
+  </div>
+  {{/inline}}
+  {{#*inline "test"}}
+  <div class="test list-group-item animated bounceInLeft" data-id="{{_id}}">
+    {{#if @root.show.createCtrls}}
+    <div class="list-group-item-span-middle" style="width: 20px;">
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-remove-test">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+    </div>
+    {{/if}}
+    <div class="item-span1">
+      {{#if @root.show.createCtrls}}
+      <a href="#/tests/{{_id}}">
+      {{/if}}
+        <div class="text-ellipsis">
+          <span class="js-label">{{label}}</span><br>
+          <span>{{title}}</span>
+        </div>
+      {{#if @root.show.createCtrls}}
+      </a>
+      {{/if}}
+    </div>
+    {{#each assets}}
+    <div class="item-span">
+      {{#if @root.show.createCtrls}}
+      <a href="#/assets/{{_id}}">
+      {{/if}}
+        <div class="text-ellipsis">
+          <span>{{type}}</span><br>
+          {{#if description}}
+          <span>{{description}}</span>
+          {{else}}
+          <span>{{@root.locals.empty}}</span>
+          {{/if}}
+        </div>
+      {{#if @root.show.createCtrls}}
+      </a>
+      {{/if}}
+    </div>
+    {{/each}}
+    {{#if @root.show.execCtrls}}
+    <div class="pull-right">
+      <a href="#" class="js-execute-test btn btn-primary">{{@root.locals.execute}}</a>
+    </div>
+    {{/if}}
+  </div>
+  {{/inline}}
+</script>

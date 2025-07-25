@@ -1,0 +1,31 @@
+<div class="modal-dialog modal-info modal-lg">
+  <div class="modal-content">
+    <div class="color-line"></div>
+    <div class="modal-header">
+      <h4 class="modal-title">{{@root.locals.report}}</h4>
+    </div>
+    <div class="modal-body edit" data-idx="{{report.idx}}">
+      <input type="text" value="{{report.name}}" class="data-name" style="width: 100%; padding: 10px 5px; margin-bottom: 10px;" placeholder="{{@root.locals.name}}">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab-template" data-toggle="tab">Template</a></li>
+        <li><a href="#tab-script" data-toggle="tab">Script</a></li>
+        <li><a href="#tab-style" data-toggle="tab">Style</a></li>
+      </ul>
+      <div class="tab-content" style="margin-top: 5px;">
+        <div id="tab-template" class="tab-pane active">
+          <textarea class="data-template" rows=25 style="width: 100%; padding: 10px 5px; margin-bottom: 10px; font-family: monospace; overflow-wrap: normal; white-space: pre;" spellcheck="false" placeholder="Template">{{report.template}}</textarea>
+        </div>
+        <div id="tab-script" class="tab-pane">
+          <textarea class="data-script" rows=25 style="width: 100%; padding: 10px 5px; margin-bottom: 10px; font-family: monospace; overflow-wrap: normal; white-space: pre;" spellcheck="false" placeholder="Script">{{report.script}}</textarea>
+        </div>
+        <div id="tab-style" class="tab-pane">
+          <textarea class="data-style" rows=25 style="width: 100%; padding: 10px 5px; margin-bottom: 10px; font-family: monospace; overflow-wrap: normal; white-space: pre;" spellcheck="false" placeholder="Style">{{report.style}}</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">{{@root.locals.close}}</button>
+      <button type="button" class="btn btn-primary js-save">{{@root.locals.save}}</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,86 @@
+<div>
+  <div class="toolbar-header">
+    <span>{{@root.locals.transactions}}</span>
+    <a href="#" class="js-close-toolbar close">&times;</a>
+  </div>
+  <div class="toolbar-body">
+    <span>{{host.description}}</span><br>
+    <span>{{host.hostType}}://{{host.address}}:{{host.port}}</span><br><br>
+    <div style="margin-bottom: 15px;">
+      <a class="btn btn-default btn-sm" style="width: 100%; margin-bottom: 5px;" data-toggle="collapse" data-target="#txn-fields">
+        {{@root.locals.fields}}
+      </a>
+      <div id="txn-fields" class="fields collapse">
+        {{#each @root.fields}}
+        {{> field}}
+        {{/each}}
+        <div class="add-field">
+          <i class="pe-7s-more pe-rotate-90"></i>
+          <input type="text" class="js-field-value" style="width: 195px;">
+        </div>
+      </div>
+    </div>
+    <div class="txns"></div>
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "txnIcon"}}
+  {{#is type "inbound"}}{{#if response.chained}}pe-7s-shuffle{{else}}pe-7s-cloud-upload{{/if}}{{/is}}
+  {{#is type "outbound"}}pe-7s-cloud-download{{/is}}
+  {{/inline}}
+  {{#*inline "txnStatus"}}
+  {{#is status "created"}}{{@root.locals.txn-status.created}}{{/is}}
+  {{#is status "received"}}{{@root.locals.txn-status.received}}{{/is}}
+  {{#is status "match"}}{{@root.locals.txn-status.match}}{{/is}}
+  {{#is status "delay"}}{{@root.locals.txn-status.delay}}{{/is}}
+  {{#is status "request"}}{{@root.locals.txn-status.request}}{{/is}}
+  {{#is status "chaining"}}{{@root.locals.txn-status.chaining}}{{/is}}
+  {{#is status "chained"}}{{@root.locals.txn-status.chained}}{{/is}}
+  {{#is status "responded"}}{{@root.locals.txn-status.responded}}{{/is}}
+  {{#is status "finished"}}{{@root.locals.txn-status.finished}}{{/is}}
+  {{#is status "error"}}{{@root.locals.txn-status.error}}{{/is}}
+  {{/inline}}
+  {{#*inline "field"}}
+  <div class="field" style="display: table; margin-bottom: 5px;">
+    <div data-toggle="dropdown" style="display: table-cell; width: 20px;">
+      <i class="pe-7s-more pe-rotate-90"></i>
+    </div>
+    <div style="display: table-cell; max-width: 195px;">
+      <span class="data-value" style="word-break: break-all;">{{#if value}}{{value}}{{else}}{{this}}{{/if}}</span>
+    </div>
+    <ul class="dropdown-menu">
+      <li><a href="#" class="js-move-up-field">{{@root.locals.move_up}}</a></li>
+      <li><a href="#" class="js-move-down-field">{{@root.locals.move_down}}</a></li>
+      <li class="divider"></li>
+      <li><a href="#" class="js-remove-field">{{@root.locals.remove}}</a></li>
+    </ul>
+  </div>
+  {{/inline}}
+  {{#*inline "txn"}}
+  <div class="txn panel animated bounceIn" data-id="{{_id}}" data-modified="{{modified}}">
+    <a href="#" class="list-item js-view-txn">
+      <div class="panel-body" style="padding: 5px 15px">
+        <div class="{{#if executionId}}bg-green{{else}}bg-red-deep{{/if}}" style="top: 0; left: 0; width: 6px; bottom: 0; position: absolute;"></div>
+        <div style="display: flex; align-items: center;">
+          <div style="margin-top: 5px; width: 30px;">
+            <i class="{{> txnIcon}}" style="font-size: 30px;"></i>
+          </div>
+          <div style="flex-grow: 1; text-align: center;">
+            <span class="label label-default" style="">{{moment instant format="L LTS"}}</span>
+            {{#if internalTime}}
+            <span class="label label-info" title="{{@root.locals.processing_time}}">{{internalTime}} ms</span>
+            {{/if}}
+          </div>
+        </div>
+        <span class="label {{#is status 'error'}}label-danger{{else}}label-primary{{/is}}">{{> txnStatus}}&nbsp;</span>
+        <span>{{hostType}}://{{remoteAddress}}:{{remotePort}} {{method}} {{url}}</span>
+      </div>
+    </a>
+    {{#each request.primary}}
+    <div class="panel-body" style="padding: 5px 10px">
+      <span style="word-break: break-all;" title="{{field}}{{name}}">{{value}}</span>
+    </div>
+    {{/each}}
+  </div>
+  {{/inline}}
+</script>

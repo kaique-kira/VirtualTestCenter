@@ -1,0 +1,244 @@
+<div class="wrapper">
+  <div class="header animated fadeIn">
+    <div class="panel">
+      <div class="panel-body">
+        <div class="pull-right actions">
+          <input class="inline js-search" type="text" placeholder="{{locals.search}}"/>
+          {{#if @root.show.createCtrls}}
+          <div class="dropdown">
+            <button href="#" class="btn btn-primary" data-toggle="dropdown">{{@root.locals.create}}&nbsp;<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li class="js-create-run"><a href="#">{{@root.locals.run}}</a></li>
+            </ul>
+          </div>
+          {{/if}}
+        </div>
+        <h2 class="font-light">{{@root.locals.executions}}</h2>
+      </div>
+    </div>
+  </div>
+  {{#if run}}
+  {{#with run}}{{> run}}{{/with}}
+  {{else}}
+  <div class="runs animate-panel">
+    {{#each runs}}
+    {{> run}}
+    {{/each}}
+  </div>
+  {{/if}}
+  {{#if issues}}
+  <div class="issues list-group">
+    {{#each issues}}
+    {{> issue}}
+    {{/each}}
+  </div>
+  {{/if}}
+  <div class="executions list-group">
+    {{#each executions}}
+      {{> execution}}
+    {{/each}}
+    {{#if executions}}
+    <div class="list-group-item">
+      <div class="item-span item-span-center">
+        <a href="#" class="js-more-execution">
+          <i class="pe-7s-more"></i>
+        </a>
+      </div>
+    </div>
+    {{else}}
+    <div class="list-group-item">
+      <div class="item-span item-span-center">
+        <span>{{@root.locals.no_results}}<span>
+      </div>
+    </div>
+    {{/if}}
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "color"}}
+  {{#is status "active"}}text-info{{else}}
+  {{#is status "review"}}text-primary2{{else}}
+  {{#is result "pass"}}text-success{{/is}}
+  {{#is result "skipped"}}text-warning2{{/is}}
+  {{#is result "impact"}}text-warning{{/is}}
+  {{#is result "fail"}}text-danger2{{/is}}{{/is}}{{/is}}
+  {{/inline}}
+  {{#*inline "runStatus"}}
+  {{#is status "open"}}{{@root.locals.run-status.open}}{{/is}}
+  {{#is status "active"}}{{@root.locals.run-status.active}}{{/is}}
+  {{#is status "closed"}}{{@root.locals.run-status.closed}}{{/is}}
+  {{/inline}}
+  {{#*inline "run"}}
+  <div class="run panel" data-id="{{_id}}" data-waiting="{{waiting}}" data-skipped="{{skipped}}" data-pass="{{pass}}" data-impact="{{impact}}" data-fail="{{fail}}" data-modified="{{modified}}">
+    <div class="panel-heading panel-built">
+      {{#if @root.show.createCtrls}}
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-edit-run">{{@root.locals.edit}}</a></li>
+          <li class="divider"></li>
+          <li><a href="#" class="js-remove-run">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+      {{/if}}
+      <span class="js-name">{{name}}</span>
+    </div>
+    {{#if description}}
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-4">
+          <dl class="dl-horizontal" style="margin-bottom: 10px;">
+            <dt>{{@root.locals.status}}</dt>
+            <dd>{{> "runStatus"}}</dd>
+            {{#isnt status "open"}}
+            <dt>{{@root.locals.started}}</dt>
+            <dd>{{moment started format='LLL'}}</dd>
+            {{/isnt}}
+            {{#is status "closed"}}
+            <dt>{{@root.locals.finished}}</dt>
+            <dd>{{moment finished format='LLL'}}</dd>
+            {{/is}}
+            {{#if total}}
+            <dt>{{@root.locals.tests}}</dt>
+            <dd>{{total}}</dd>
+            {{/if}}
+            {{#if scenarios}}
+            <dt>{{@root.locals.scenarios}}</dt>
+            <dd>{{scenarios}}</dd>
+            {{/if}}
+          </dl>
+          <div>{{marked description}}</div>
+        </div>
+        <div class="col-md-8">
+          <canvas style="height: 120px;" class="js-stats-chart"></canvas>
+          <canvas style="height: 150px;" class="js-evo-chart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <div class="dropdown">
+        <button href="#" class="btn btn-primary" data-toggle="dropdown">{{@root.locals.reports}}&nbsp;<span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          {{#each @root.domain.reports}}
+          <li class="report" data-idx="{{@index}}"><a href="#" class="js-gen-report">{{name}}</a></li>
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+    {{else}}
+    <a href="#/executions?run={{_id}}" class="list-item">
+      <div class="panel-body">
+        <dl class="dl-horizontal" style="margin-bottom: 10px;">
+          <dt>{{@root.locals.status}}</dt>
+          <dd>{{> "runStatus"}}</dd>
+          {{#isnt status "open"}}
+          <dt>{{@root.locals.started}}</dt>
+          <dd>{{moment started format='LLL'}}</dd>
+          {{/isnt}}
+          {{#is status "closed"}}
+          <dt>{{@root.locals.finished}}</dt>
+          <dd>{{moment finished format='LLL'}}</dd>
+          {{/is}}
+        </dl>
+        <canvas height="120px" width="230px" class="js-stats-chart"></canvas>
+      </div>
+    </a>
+    {{/if}}
+  </div>
+  {{/inline}}
+  {{#*inline "issue"}}
+  <div class="issue list-group-item" data-id="{{_id}}">
+    {{#if @root.show.createCtrls}}
+    <div class="item-span-menu">
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-remove-issue">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+    </div>
+    {{/if}}
+    <div class="item-span5">
+      <span class="text-ellipsis">{{type}}</span>
+    </div>
+    <div class="item-span1">
+      <a href="#" class="js-edit-issue">
+        <span class="js-name text-ellipsis">{{name}}<span>
+      </a>
+    </div>
+    <div class="item-span4">
+      <span class="text-ellipsis">{{createdByUsername}}</span>
+    </div>
+    <div class="item-span5 item-span-right" style="text-align: right;">
+      <span class="label label-default ellapsed" data-time="{{modified}}" title="{{moment modified format='LLL'}}">{{moment modified fromNow=false}}</span>
+    </div>
+  </div>
+  {{/inline}}
+  {{#*inline "execution"}}
+  <div class="execution list-group-item bounceInLeft animated" data-id="{{_id}}" data-status="{{status}}" data-result="{{result}}" data-modified="{{modified}}" data-scenario="{{scenario.name}}" data-sequence="{{scenario.sequence}}">
+    <div class="item-span-strip {{#is result 'pass'}}bg-green{{/is}}{{#is result 'skipped'}}bg-orange{{/is}}{{#is result 'impact'}}bg-yellow{{/is}}{{#is result 'fail'}}bg-red-deep{{/is}}"></div>
+    {{#if @root.show.createCtrls}}
+    <div class="item-span-menu">
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-remove-execution">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+    </div>
+    {{/if}}
+    <div class="item-span5">
+      <span class="{{> color}}">
+        {{#is status "waiting"}}{{@root.locals.execution-status.waiting}}{{/is}}
+        {{#is status "active"}}{{@root.locals.execution-status.active}}{{/is}}
+        {{#is status "review"}}{{@root.locals.execution-status.review}}{{/is}}
+        {{#is status "finished"}}{{@root.locals.execution-status.finished}}{{/is}}
+        {{#is status "closed"}}{{@root.locals.execution-status.closed}}{{/is}}
+      </span>
+    </div>
+    <div class="item-span5">
+      <span class="{{> color}}">
+        {{#is result "pass"}}{{@root.locals.execution-result.pass}}{{/is}}
+        {{#is result "impact"}}{{@root.locals.execution-result.impact}}{{/is}}
+        {{#is result "skipped"}}{{@root.locals.execution-result.skipped}}{{/is}}
+        {{#is result "fail"}}{{@root.locals.execution-result.fail}}{{/is}}
+      </span>
+    </div>
+    <div class="item-span1">
+      <a href="#/executions/{{@root.domainId}}/{{_id}}">
+        <span class="js-name text-ellipsis {{> color}}">{{test.label}}</span>
+      </a>
+    </div>
+    <div class="item-span4">
+      <span class="{{> color}}">{{username}}</span>
+    </div>
+    <div class="item-span5 item-span-right">
+      <span class="label label-default ellapsed" data-time="{{modified}}" title="{{moment modified format='LLL'}}">{{moment modified fromNow=false}}</span>
+    </div>
+  </div>
+  {{/inline}}
+  {{#*inline "scenario"}}
+  <div class="scenario list-group-item bounceInLeft animated" data-name="{{name}}">
+    <div class="item-span-strip"></div>
+    <div class="item-span-menu">
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-remove-scenario">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="item-span">
+      <strong><span>{{name}}</span></strong>
+    </div>
+  </div>
+  {{/inline}}
+</script>

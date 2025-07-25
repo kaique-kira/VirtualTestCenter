@@ -1,0 +1,59 @@
+<div class="modal-dialog modal-info modal-lg">
+  <div class="modal-content">
+    <div class="color-line"></div>
+    <div class="modal-header">
+      <h4 class="modal-title">{{@root.locals.rule}}</h4>
+    </div>
+    <div class="modal-body edit" data-idx="{{rule.idx}}">
+      <input type="text" value="{{rule.name}}" class="data-name" style="width: 100%; padding: 10px 5px; margin-bottom: 10px;" placeholder="{{@root.locals.name}}">
+      <legend>{{@root.locals.match}}</legend>
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width: 20px"></th>
+            <th>{{@root.locals.field}}</th>
+            <th>{{@root.locals.validation}}</th>
+          </th>
+        </thead>
+        <tbody>
+          {{#each rule.matches}}
+          {{> match}}
+          {{/each}}
+          <tr class="add-match">
+            <td colspan="3">
+              <input type="text" class="js-add-match-field">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <legend>{{@root.locals.response}}</legend>
+      <textarea rows="8" style="width: 100%" class="pre data-response">{{rule.response.data}}</textarea>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">{{@root.locals.close}}</button>
+      <button type="button" class="btn btn-primary js-save">{{@root.locals.save}}</button>
+    </div>
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "match"}}
+  <tr class="match">
+    <td style="width: 20px">
+      <div>
+        <div data-toggle="dropdown" class="drag-row draggable">
+          <i class="pe-7s-more pe-rotate-90"></i>
+          <span class="js-option-value"></span>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-move-up-row">{{@root.locals.move_up}}</a></li>
+          <li><a href="#" class="js-move-down-row">{{@root.locals.move_down}}</a></li>
+          <li class="divider"></li>
+          <li><a href="#" class="js-remove-row">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+    </td>
+    <td><span class="data-field">{{field}}</span></td>
+    <td><input type="text" class="data-expr" value="{{expr}}"></td>
+  </tr>
+  {{/inline}}
+</script>

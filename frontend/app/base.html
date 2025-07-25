@@ -1,0 +1,146 @@
+<div id="header">
+  <div class="color-line"></div>
+  <div id="navbar">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <div class="navbar-brand">
+          <img src="/app/img/vtc.svg" style="width: 34px; margin: 0 5px;">
+          <span>VIRTUAL</span>
+        </div>
+        <a href="#" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-menu">
+          <i class="pe-7s-menu"></i>
+        </a>
+      </div>
+      <div id="header-menu" class="navbar-collapse collapse">
+        {{> "header-menu"}}
+      </div>
+    </div>
+  </div>
+</div>
+<aside id="toolbar" style="display: none;">
+  <div class="loading spinner">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+  </div>
+</aside>
+<div id="content">
+  <div class="loading spinner">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+  </div>
+</div>
+<div id="modal" class="modal animated fadeIn" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<script type="text/x-handlebars-template">
+  {{#*inline "header-menu"}}
+  <ul class="nav navbar-nav navbar-right">
+    <li>
+      <a id="user" href="#" data-toggle="dropdown">
+        <i class="pe-7s-user"></i>
+        <span id="username">{{username}}</span>
+      </a>
+      <ul class="dropdown-menu animated bounceIn" aria-labelledby="user">
+        <li class="section">
+          <span>{{locals.tools}}</span>
+        </li>
+        <li>
+          <a href="#" class="js-open-vpay">
+            <span>Virtual Pay</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#" class="js-signout">
+        <i old="fa fa-2x fa-sign-out" class="pe-7s-upload pe-rotate-90"></i>
+        <span>{{locals.signout}}</span>
+      </a>
+    </li>
+  </ul>
+  <ul class="nav navbar-nav">
+    <li class="js-domain-menu">
+      <a href="#" data-toggle="dropdown">
+        <i old="fa fa-2x fa-institution" class="pe-7s-culture"></i>
+        {{#if domainName}}
+        <span>{{domainName}}</span>
+        {{else}}
+        <span>{{locals.empty}}</span>
+        {{/if}}
+      </a>
+      <ul class="dropdown-menu animated bounceIn" style="overflow-y: scroll; max-height: 800px;">
+        {{#is accessLevel "admin"}}
+        <li>
+          <a href="#/domain/{{domainId}}">
+            <span>{{locals.manage}}</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="js-manage-permissions js-todo">
+            <span>{{locals.permissions}}</span>
+          </a>
+        </li>
+        <li class="divider"></li>
+        {{/is}}
+        {{#if permissions}}
+        {{#each permissions}}
+        <li class="domain" data-id="{{domainId}}">
+          <a href="#" class="js-select-domain">
+            <span>{{domainName}}</span>
+            <span class="font-light">
+              {{#is level "guest"}}{{@root.locals.guest}}{{/is}}
+              {{#is level "read"}}{{@root.locals.guest}}{{/is}}
+              {{#is level "scope"}}{{@root.locals.scope}}{{/is}}
+              {{#is level "exec"}}{{@root.locals.execution}}{{/is}}
+              {{#is level "create"}}{{@root.locals.creation}}{{/is}}
+              {{#is level "admin"}}{{@root.locals.administration}}{{/is}}
+            </span>
+          </a>
+        </li>
+        {{/each}}
+        {{else}}
+        <li>
+          <a href="#">{{locals.empty}}</a>
+        </li>
+        {{/if}}
+      </ul>
+    </li>
+    {{#if show.hostsNav}}
+    <li>
+      <a href="#/hosts">
+        <i class="pe-7s-network"></i>
+        <span>{{locals.hosts}}</span>
+      </a>
+    </li>
+    {{/if}}
+    {{#if show.executionsNav}}
+    <li>
+      <a href="#/executions">
+        <i class="pe-7s-play"></i>
+        <span>{{locals.executions}}</span>
+      </a>
+    </li>
+    {{/if}}
+    {{#if show.testsNav}}
+    <li>
+      <a href="#/tests">
+        <i class="pe-7s-copy-file"></i>
+        <span>{{locals.tests}}</span>
+      </a>
+    </li>
+    {{/if}}
+    {{#if show.assetsNav}}
+    <li>
+      <a href="#/assets">
+        <i class="pe-7s-share"></i>
+        <span>{{locals.assets}}</span>
+      </a>
+    </li>
+    {{/if}}
+  </ul>
+  {{/inline}}
+</script>

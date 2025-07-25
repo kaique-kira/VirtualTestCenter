@@ -1,0 +1,55 @@
+<div class="modal-dialog modal-info" role="document">
+  <div class="modal-content">
+    <div class="color-line"></div>
+    <div class="modal-header">
+      <h4 class="modal-title">{{@root.locals.vpay_modal.title}}</h4>
+    </div>
+    <div id="modal-content" class="modal-body">
+      <div>
+        <span>Connector:&nbsp;</span>
+        <span class="js-vpay-conn-status-waiting label label-default">{{@root.locals.waiting}}</span>
+        <span class="js-vpay-conn-status-active label label-success">{{@root.locals.active}}</span>
+      </div>
+      <div class="js-vpay-conn-checks">
+        <span>Build:&nbsp;</span>
+        <span class="data-vpay-conn-build"></span>
+        <span class="js-vpay-conn-build-fail"><i class="fa fa-times"></i></span>
+        <span class="js-vpay-conn-build-check"><i class="fa fa-check"></i></span>
+        <div class="js-vpay-conn-build-outdated text-danger" style="text-align: center;">{{@root.locals.connector_outdated}}</div>
+      </div>
+      <hr />
+      <span style="white-space: pre-wrap;">{{@root.locals.vpay_modal.heading}}</span>
+      <div style="margin-top: 40px; text-align: center;">
+        <span>{{@root.locals.vpay_modal.install_java}}</span><br><br>
+        <a href="https://java.com/download/" target="_blank" class="no-decoration">
+          <img src="/app/img/java.png">
+        </a>
+      </div>
+      <div style="margin-top: 20px; text-align: center;">
+        <span style="white-space: pre-wrap;">{{@root.locals.vpay_modal.download_connector}}</span><br><br>
+        <a href="/app/tools/connector-{{@root.connectorBuild}}.jar" class="unstyled">
+          Windows&nbsp;<i class="fa fa-windows fa-2x fa-fw"></i>&nbsp;|&nbsp;
+          Mac OS&nbsp;<i class="fa fa-apple fa-2x fa-fw"></i>&nbsp;|&nbsp;
+          Linux&nbsp;<i class="fa fa-linux fa-2x fa-fw"></i>
+        </a>
+      </div>
+      <div style="margin-top: 20px; text-align: center;">
+        <span style="white-space: pre-wrap;">{{@root.locals.vpay_modal.install_certificate}}</span><br><br>
+        <a href="/app/tools/connector.crt" class="no-decoration">
+          <img src="/app/img/certificate.png">
+        </a>
+      </div>
+      <div style="margin-top: 20px; text-align: center;">
+        <span style="white-space: pre-wrap;">{{@root.locals.vpay_modal.some_browsers}}</span><br><br>
+        <a href="https://localhost:25700/" target="_blank" class="unstyled">
+          <i class="fa fa-plug fa-2x fa-fw"></i>
+        </a>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">{{@root.locals.close}}</button>
+    </div>
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+</script>

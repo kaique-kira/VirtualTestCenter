@@ -1,0 +1,48 @@
+<div class="wrapper">
+  <div class="header animated fadeIn">
+    <div class="panel">
+      <div class="panel-body">
+        <div class="pull-right actions">
+          <input class="inline js-search" type="text" placeholder="{{locals.search}}"/>
+          {{#if @root.show.createCtrls}}
+          <a href="#" class="btn btn-primary js-create-asset">{{@root.locals.create}}</a>
+          {{/if}}
+        </div>
+        <h2 class="font-light">{{@root.locals.assets}}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="assets animate-panel">
+    {{#each assets}}
+    <div class="asset panel" data-id="{{_id}}">
+      <div class="panel-heading panel-built">
+        {{#if @root.show.createCtrls}}
+        <div class="dropdown">
+          <div data-toggle="dropdown">
+            <i class="pe-7s-more pe-rotate-90"></i>
+          </div>
+          <ul class="dropdown-menu">
+            <li><a href="#" class="js-remove-asset">{{@root.locals.remove}}</a></li>
+          </ul>
+        </div>
+        {{/if}}
+        <span>{{type}}</span>
+      </div>
+      {{#if @root.show.createCtrls}}
+      <a href="#/assets/{{_id}}" class="list-item">
+      {{/if}}
+        <div class="panel-body">
+          <span class="data-desc">{{description}}</span>
+        </div>
+      {{#if @root.show.createCtrls}}
+      </a>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{#unless assets}}
+  <div class="list-group-item">
+    <span>{{@root.locals.no_results}}<span>
+  </div>
+  {{/unless}}
+</div>

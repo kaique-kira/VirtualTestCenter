@@ -1,0 +1,80 @@
+<div class="wrapper">
+  <div class="header animated fadeIn">
+    <div class="panel">
+      <div class="panel-body">
+        <h2 class="font-light">{{@root.locals.domain}}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="domain" data-id="{{domain._id}}">
+    <div class="panel">
+      <div class="panel-body">
+        <input type="text" class="data-title" style="width: 100%;" placeholder="{{@root.locals.name}}" value="{{domain.name}}">
+      </div>
+      <div class="panel-body">
+        <label>{{locals.assets}}</label>
+        <ol class="assets list-unstyled">
+          {{#each domain.assets}}
+          {{> type}}
+          {{/each}}
+          <li class="add-type">
+            <i class="pe-7s-more pe-rotate-90"></i>
+            <input type="text" class="js-type-value" style="width: 195px;">
+          </li>
+        </ol>
+      </div>
+      <div class="panel-body">
+        <label>{{locals.issues}}</label>
+        <ol class="issues list-unstyled">
+          {{#each domain.issues}}
+          {{> type}}
+          {{/each}}
+          <li class="add-type">
+            <i class="pe-7s-more pe-rotate-90"></i>
+            <input type="text" class="js-type-value" style="width: 195px;">
+          </li>
+        </ol>
+      </div>
+    </div>
+    <div class="reports list-group">
+      <div class="list-group-item">
+        <span>{{@root.locals.reports}}</span>
+      </div>
+      {{#each domain.reports}}
+      <div class="report list-group-item" data-idx="{{@index}}">
+        <div class="list-group-item-span-middle" style="width: 20px;">
+          <div class="dropdown">
+            <div data-toggle="dropdown">
+              <i class="pe-7s-more pe-rotate-90"></i>
+            </div>
+            <ul class="dropdown-menu">
+              <li><a href="#" class="js-remove-report">{{@root.locals.remove}}</a></li>
+            </ul>
+          </div>
+        </div>
+        <a href="#" class="js-edit-report text-ellipsis">
+          <div class="js-name list-group-item-span">{{name}}</div>
+        </a>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "type"}}
+  <li class="type" style="margin-bottom: 5px;">
+    <div data-toggle="dropdown" style="display: inline-block; width: 20px;">
+      <i class="pe-7s-more pe-rotate-90"></i>
+    </div>
+    <div style="display: inline-block;">
+      <span class="data-value" style="word-break: break-all;">{{#if type}}{{type}}{{else}}{{this}}{{/if}}</span>
+    </div>
+    <ul class="dropdown-menu">
+      <li><a href="#" class="js-move-up-field">{{@root.locals.move_up}}</a></li>
+      <li><a href="#" class="js-move-down-field">{{@root.locals.move_down}}</a></li>
+      <li class="divider"></li>
+      <li><a href="#" class="js-remove-field">{{@root.locals.remove}}</a></li>
+    </ul>
+  </li>
+  {{/inline}}
+</script>

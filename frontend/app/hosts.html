@@ -1,0 +1,257 @@
+<div class="wrapper">
+  <div class="header animated fadeIn">
+    <div class="panel">
+      <div class="panel-body">
+        <div class="pull-right actions">
+          <input class="inline js-search" type="text" placeholder="{{locals.search}}"/>
+          {{#if @root.show.createCtrls}}
+          <div class="dropdown">
+            <button href="#" class="btn btn-primary" data-toggle="dropdown">{{@root.locals.create}}&nbsp;<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li class="js-create-host js-todo"><a href="#">{{@root.locals.host}}</a></li>
+            </ul>
+          </div>
+          {{/if}}
+        </div>
+        <h2 class="font-light">{{locals.hosts}}</h2>
+      </div>
+    </div>
+  </div>
+  {{#if host}}
+  <div>
+    {{#with host}}{{> host}}{{/with}}
+    {{#if @root.show.createCtrls}}
+    <div class="assets">
+      {{#each assets}}
+        {{> asset}}
+      {{/each}}
+      <div class="add-asset panel panel-void dropup">
+        <a href="#" class="list-item js-link-asset">
+          <div class="panel-body">
+            <i class="pe-7s-more"></i>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="rules list-group">
+      <div class="list-group-item">
+        <span>{{@root.locals.rules}}</span>
+      </div>
+      {{#each host.rules}}
+      {{> rule}}
+      {{/each}}
+      <div class="add-rule list-group-item">
+        <div class="item-span item-span-center">
+          <a href="#" class="js-add-rule">
+            <i class="pe-7s-more"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    {{/if}}
+  </div>
+  {{else}}
+  <div class="hosts animate-panel">
+    {{#each hosts}}
+    {{> host}}
+    {{/each}}
+  </div>
+  {{/if}}
+  <div class="txns list-group">
+    {{#each txns}}
+    {{> txn}}
+    {{/each}}
+    {{#if txns}}
+    <div class="list-group-item">
+      <div class="item-span item-span-center">
+        <a href="#" class="js-more-txn ">
+          <i class="pe-7s-more"></i>
+        </a>
+      </div>
+    </div>
+    {{else}}
+    <div class="list-group-item">
+      <span>{{@root.locals.no_results}}<span>
+    </div>
+    {{/if}}
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "txnIcon"}}
+  {{#is type "inbound"}}{{#if response.chained}}pe-7s-shuffle{{else}}pe-7s-cloud-upload{{/if}}{{/is}}
+  {{#is type "outbound"}}pe-7s-cloud-download{{/is}}
+  {{/inline}}
+  {{#*inline "txnStatus"}}
+  {{#is status "created"}}{{@root.locals.txn-status.created}}{{/is}}
+  {{#is status "received"}}{{@root.locals.txn-status.received}}{{/is}}
+  {{#is status "match"}}{{@root.locals.txn-status.match}}{{/is}}
+  {{#is status "delay"}}{{@root.locals.txn-status.delay}}{{/is}}
+  {{#is status "request"}}{{@root.locals.txn-status.request}}{{/is}}
+  {{#is status "chaining"}}{{@root.locals.txn-status.chaining}}{{/is}}
+  {{#is status "chained"}}{{@root.locals.txn-status.chained}}{{/is}}
+  {{#is status "responded"}}{{@root.locals.txn-status.responded}}{{/is}}
+  {{#is status "finished"}}{{@root.locals.txn-status.finished}}{{/is}}
+  {{#is status "error"}}{{@root.locals.txn-status.error}}{{/is}}
+  {{/inline}}
+  {{#*inline "host"}}
+  <div class="host panel" data-id="{{_id}}" data-modified="{{modified}}">
+    <div class="panel-heading panel-built">
+      {{#if @root.show.createCtrls}}
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-edit-host js-todo">{{@root.locals.edit}}</a></li>
+          <li class="divider"></li>
+          <li><a href="#" class="js-remove-host js-todo">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+      {{/if}}
+      <span>{{description}}</span>
+    </div>
+    {{#if _viewDetails}}
+    <div class="panel-body">
+      <div style="display: flex;">
+        <div style="width: 80px;">
+          {{#is connType "server"}}
+          {{#if chain.enabled}}
+          <span><i class="pe-7s-shuffle" style="font-size: 56px"></i></span>
+          {{else}}
+          <span><i class="pe-7s-cloud-upload" style="font-size: 56px"></i></span>
+          {{/if}}
+          {{/is}}
+          {{#is connType "client"}}
+          <span><i class="pe-7s-cloud-download" style="font-size: 56px"></i></span>
+          {{/is}}
+        </div>
+        <div style="flex-grow: 1;">
+          <dl>
+            <dt>Id</dt>
+            <dd>{{logicId}}</dd>
+            <dt>{{@root.locals.address}}</dt>
+            <dd>{{hostType}}://{{address}}:{{port}}</dd>
+            {{#if chain.enabled}}
+            <dt>{{@root.locals.chain}} {{#if chain.force_forward}}[{{@root.locals.forward}}]{{/if}}</dt>
+            <dd>{{#if chain.type}}{{chain.type}}{{else}}{{hostType}}{{/if}}://{{chain.address}}:{{chain.port}}{{chain.path}}</dd>
+            {{/if}}
+            <dt>{{@root.locals.format}}</dt>
+            <dd>{{encoding}} {{messageType}}{{#if msgOffset}} <strong>Offset:</strong> {{msgOffset}} bytes{{/if}}</dd>
+            {{#if mliSize}}
+            <dt>MLI</dt>
+            <dd>{{mliEndianness}} <strong>{{@root.locals.size}}:</strong> {{mliSize}} bytes</dd>
+            {{/if}}
+          </dl>
+        </div>
+      </div>
+    </div>
+    {{else}}
+    <a href="#/hosts?host={{_id}}" class="list-item">
+      <div class="panel-body">
+        {{#is connType "server"}}
+        {{#if chain.enabled}}
+        <span style="display: block; text-align: center;">{{#if chain.type}}{{chain.type}}{{else}}{{hostType}}{{/if}}://{{chain.address}}:{{chain.port}}{{chain.path}}</span>
+        <span style="display: block; text-align: center;"><i class="pe-7s-shuffle" style="font-size: 56px"></i></span>
+        {{else}}
+        <span style="display: block; text-align: center;"><i class="pe-7s-cloud-upload" style="font-size: 56px"></i></span>
+        {{/if}}
+        {{/is}}
+        {{#is connType "client"}}
+        <span style="display: block; text-align: center;"><i class="pe-7s-cloud-download" style="font-size: 56px"></i></span>
+        {{/is}}
+        <span style="display: block; text-align: center;">[{{logicId}}] {{hostType}} <strong>{{port}}</strong> {{messageType}}</span>
+      </div>
+    </a>
+    {{/if}}
+    {{#if @root.show.createCtrls}}
+    <div class="panel-footer">
+      <div class="btn-group">
+        <a href="#" class="btn {{#if enabled}}btn-success{{else}}btn-danger2{{/if}} js-toggle-host">{{#if enabled}}{{@root.locals.online}}{{else}}{{@root.locals.offline}}{{/if}}</a>
+        <a href="#" class="btn {{#if chain.enabled}}btn-success{{else}}btn-danger2{{/if}} js-toggle-chain">{{#if chain.enabled}}{{@root.locals.chain}}: {{@root.locals.on}}{{else}}{{@root.locals.chain}}: {{@root.locals.off}}{{/if}}</a>
+      </div>
+    </div>
+    {{/if}}
+  </div>
+  {{/inline}}
+  {{#*inline "asset"}}
+  <div class="panel asset" data-id="{{_id}}" data-type="{{type}}">
+    <div class="panel-heading panel-built">
+      <div class="dropdown" style="display: inline-block; vertical-align: top;">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-unlink-asset">{{@root.locals.unlink}}</a></li>
+        </ul>
+      </div>
+      <span>{{type}}</span>
+    </div>
+    <a href="#/assets/{{_id}}" class="list-item">
+      <div class="panel-body">
+        <span class="data-desc">{{description}}</span>
+      </div>
+    </a>
+  </div>
+  {{/inline}}
+  {{#*inline "rule"}}
+  <div class="rule list-group-item" data-idx="{{@index}}">
+    <div class="item-span-menu">
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-move-up-rule">{{@root.locals.move_up}}</a></li>
+          <li><a href="#" class="js-move-down-rule">{{@root.locals.move_down}}</a></li>
+          <li class="divider"></li>
+          <li><a href="#" class="js-remove-rule">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="item-span">
+      <a href="#" class="js-edit-rule">
+        <div class="text-ellipsis">
+          <span class="data-name">{{name}}<span>
+        </div>
+      </a>
+    </div>
+  </div>
+  {{/inline}}
+  {{#*inline "txn"}}
+  <div class="txn list-group-item bounceInLeft animated" data-id="{{_id}}" data-modified="{{modified}}">
+    <div class="item-span-strip {{#if executionId}}bg-green{{/if}}{{#unless executionId}}bg-red-deep{{/unless}}"></div>
+    <div class="item-span-menu">
+      {{#if executionId}}
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#/executions/{{executionId}}">{{@root.locals.execution}}</a></li>
+        </ul>
+      </div>
+      {{/if}}
+    </div>
+    <div class="item-span1">
+      <a href="#" class="js-view-txn">
+        <i class="inline-icon {{> txnIcon}}"></i>
+        {{#if status}}<span class="label {{#is status 'error'}}label-danger{{else}}label-primary{{/is}}">{{> txnStatus}}</span>&nbsp;{{/if}}
+        <span>{{hostType}}://{{remoteAddress}}:{{remotePort}} {{#if messageType}}[{{messageType}}]{{/if}}</span>
+      </a>
+    </div>
+    <div class="item-span1">
+      <a href="#/hosts?host={{hostId}}">
+        <div class="text-ellipsis">
+          <span>{{host.name}}</span>
+        </div>
+      </a>
+    </div>
+    <div class="item-span4 item-span-right">
+      {{#if internalTime}}
+      <span class="label label-info" title="{{@root.locals.processing_time}}">{{internalTime}} ms</span>
+      {{/if}}
+      <span class="label label-default ellapsed" data-time="{{instant}}" title="{{moment instant format='LLL'}}">{{moment instant fromNow=false}}</span>
+    </div>
+  </div>
+  {{/inline}}
+</script>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VTC | Virtual Test Center</title>
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.0/chartist.min.css">
+  <style type="text/css">
+  body {
+    font-family: 'Open Sans';
+    font-weight: 300;
+  }
+  @media screen {
+    .page {
+      position: relative;
+      left: 50%;
+      width: 720px;
+      height: 950px;
+      padding: 20px;
+      margin-left: -360px;
+      margin-bottom: 30px;
+      background-color: white;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+    }
+  }
+  @media print {
+    .page {
+      page-break-after: always;
+    }
+  }
+  </style>
+  <style id="style" type="text/css"></style>
+</head>
+<body>
+  <div id="content"></div>
+  <script id="template" type="text/x-handlebars-template"></script>
+  <script id="script"></script>
+  <script id="data" type="application/json"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment-with-locales.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.0/chartist.min.js"></script>
+  <script>
+  var tryRender = setInterval(render, 1000);
+  function render () {
+    console.log("Waiting data..");
+    if (!_.isEmpty($("#data").text())) {
+      var context = JSON.parse($("#data").html());
+      window.context = context;
+      if (onInit) onInit(context);
+      var renderer = Handlebars.compile($("#template").html());
+      $("#content").html(renderer(context));
+      clearInterval(tryRender);
+      console.log("Render complete.");
+    }
+  }
+  Handlebars.registerHelper('is', function (v1, v2, options) {
+    return (v1 == v2) ? options.fn(this) : options.inverse(this);
+  });
+  Handlebars.registerHelper('ifx', function (v1, operator, v2, options) {
+    switch (operator) {
+      case '==': return (v1 == v2) ? options.fn(this) : options.inverse(this);
+      case '===': return (v1 === v2) ? options.fn(this) : options.inverse(this);
+      case '!=': return (v1 != v2) ? options.fn(this) : options.inverse(this);
+      case '!==': return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+      case '<': return (v1 < v2) ? options.fn(this) : options.inverse(this);
+      case '<=': return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+      case '>': return (v1 > v2) ? options.fn(this) : options.inverse(this);
+      case '>=': return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+      case '&&': return (v1 && v2) ? options.fn(this) : options.inverse(this);
+      case '||': return (v1 || v2) ? options.fn(this) : options.inverse(this);
+      default: return options.inverse(this);
+    }
+  });
+  Handlebars.registerHelper("moment", function (context, block) {
+    if (context && context.hash) {
+      block = _.cloneDeep(context);
+      context = undefined;
+    }
+    var date = moment(context);
+
+    if (block.hash.timezone){
+      date.tz(block.hash.timezone);
+    }
+
+    var hasFormat = false;
+
+    for (var i in block.hash) {
+      if (i === "format") {
+        hasFormat = true;
+      } else if (date[i]) {
+        date = date[i](block.hash[i]);
+      } else {
+        console.log("moment.js does not support '" + i + "'");
+      }
+    }
+
+    if (hasFormat) {
+      date = date.format(block.hash.format);
+    }
+    return date;
+  });
+  Handlebars.registerHelper("marked", function (text) {
+    return new Handlebars.SafeString(marked(text));
+  });
+  </script>
+</body>

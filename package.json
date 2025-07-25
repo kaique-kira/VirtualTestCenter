@@ -1,0 +1,20 @@
+{
+  "name": "virtual",
+  "version": "1.0.1",
+  "description": "Virtual Test Center",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "date-format": "^1.0.0",
+    "express": "^4.14.0",
+    "lodash": "^4.17.4",
+    "mongodb": "^2.2.16",
+    "mustache": "^2.3.0",
+    "mustache-express": "^1.2.4"
+  },
+  "scripts": {
+    
+    "startf":"node frontend/main.js",
+    "startb":"node backend/main.js"
+   
+  }
+}

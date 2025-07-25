@@ -1,0 +1,117 @@
+<div class="wrapper">
+  <div class="header animated fadeIn">
+    <div class="panel">
+      <div class="panel-body">
+        <div class="pull-right actions">
+          <button class="pull-right btn btn-danger js-save">{{@root.locals.save}}</button>
+        </div>
+        <h2 class="font-light">{{@root.locals.asset}}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="asset" data-id="{{asset._id}}">
+    <div class="panel">
+      <div class="panel-heading panel-built">
+        <select required class="data-type" style="width: 100%; padding: 10px 5px; margin-bottom: 10px;">
+          <option value="-1" disabled selected hidden>{{locals.type}}</option>
+          {{#each domain.assets}}
+          <option value="{{type}}" {{#is @root.asset.type type}}selected{{/is}}>{{type}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <div class="panel-body">
+        <input type="text" class="data-desc" style="width: 100%;" placeholder="{{@root.locals.description}}" value="{{asset.description}}">
+      </div>
+    </div>
+    <legend>{{locals.properties}}</legend>
+    <div class="panel">
+      <div class="panel-body">
+        <table class="table properties">
+          <thead>
+            <tr>
+              <th style="width: 20px"></th>
+              <th>{{@root.locals.property}}</th>
+              <th>{{@root.locals.value}}</th>
+            </th>
+          </thead>
+          <tbody>
+            {{#each asset.properties}}
+            {{> property}}
+            {{/each}}
+            <tr class="add-property">
+              <td colspan="3">
+                <input type="text" class="js-add-property">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <legend>{{locals.fields}}</legend>
+    <div class="panel">
+      <div class="panel-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width: 20px"></th>
+              <th>{{@root.locals.field}}</th>
+              <th>{{@root.locals.format}}</th>
+              <th>{{@root.locals.description}}</th>
+            </th>
+          </thead>
+          <tbody>
+            {{#each asset.fields}}
+            {{> field}}
+            {{/each}}
+            <tr class="add-field">
+              <td colspan="4">
+                <input type="text" class="js-add-field">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "property"}}
+  <tr class="property">
+    <td style="width: 20px">
+      <div>
+        <div data-toggle="dropdown" class="drag-row draggable">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-move-up-row">{{@root.locals.move_up}}</a></li>
+          <li><a href="#" class="js-move-down-row">{{@root.locals.move_down}}</a></li>
+          <li class="divider"></li>
+          <li><a href="#" class="js-remove-row">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+    </td>
+    <td class="data-name">{{#if name}}{{name}}{{else}}{{@key}}{{/if}}</td>
+    <td><input type="text" class="data-value" value="{{#if name}}{{value}}{{else}}{{this}}{{/if}}"></td>
+  </tr>
+  {{/inline}}
+  {{#*inline "field"}}
+  <tr class="field">
+    <td style="width: 20px">
+      <div>
+        <div data-toggle="dropdown" class="drag-row draggable">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-move-up-row">{{@root.locals.move_up}}</a></li>
+          <li><a href="#" class="js-move-down-row">{{@root.locals.move_down}}</a></li>
+          <li class="divider"></li>
+          <li><a href="#" class="js-remove-row">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+    </td>
+    <td class="data-field">{{field}}</td>
+    <td><input type="text" class="data-format" value="{{format}}"></td>
+    <td><input type="text" class="data-desc" value="{{description}}{{label}}"></td>
+  </tr>
+  {{/inline}}
+</script>

@@ -1,0 +1,364 @@
+<div class="wrapper">
+  <div class="header animated fadeIn">
+    <div class="panel">
+      <div class="panel-body">
+        <div class="pull-right actions">
+          <button class="pull-right btn btn-danger js-save">{{@root.locals.save}}</button>
+        </div>
+        <h2 class="font-light">{{@root.locals.test-page.title}}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="test" data-id="{{test._id}}">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="panel">
+          <div class="panel-heading panel-built">
+            <input type="text" class="data-label" placeholder="{{@root.locals.name}}" value="{{test.label}}">
+          </div>
+          <div class="panel-body">
+            <input type="text" class="data-title" placeholder="{{@root.locals.overview}}" value="{{test.title}}">
+          </div>
+          <div class="panel-body">
+            <textarea class="data-desc" rows=15 placeholder="{{@root.locals.description}}">{{test.description}}</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <legend>{{locals.assets}}</legend>
+    <div class="assets">
+      {{#each test.assets}}
+      {{> asset}}
+      {{/each}}
+      <div class="add-asset panel panel-void dropup">
+        <a href="#" data-toggle="dropdown" class="list-item">
+          <div class="panel-body">
+            <i class="pe-7s-more"></i>
+          </div>
+        </a>
+        <ul class="asset-types dropdown-menu">
+          {{#each domain.assets}}
+          <li class="asset-type" data-type="{{type}}"><a href="#" class="js-add-asset"><span>{{type}}<span></a></li>
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+    <legend>{{locals.goals}}</legend>
+    <div class="goals">
+      {{#each test.goals}}
+      {{> goal}}
+      {{/each}}
+      <div class="panel panel-void add-goal dropup">
+        <a href="#" class="list-item" data-toggle="dropdown">
+          <div class="panel-body">
+            <i class="pe-7s-more"></i>
+          </div>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-add-goal-user_input">{{@root.locals.goal-type.user_input}}</a></li>
+          <li><a href="#" class="js-add-goal-txn_inbound">{{@root.locals.goal-type.txn_inbound}}</a></li>
+          <li><a href="#" class="js-add-goal-txn_outbound">{{@root.locals.goal-type.txn_outbound}}</a></li>
+          <li><a href="#" class="js-add-goal-card_validation">{{@root.locals.goal-type.card_validation}}</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "asset"}}
+  <div class="panel asset" data-id="{{_id}}" data-type="{{type}}">
+    <div class="panel-heading panel-built">
+      <div class="dropdown" style="display: inline-block; vertical-align: top;">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-clear-asset">{{@root.locals.clear}}</a></li>
+          <li><a href="#" class="js-unlink-asset">{{@root.locals.unlink}}</a></li>
+        </ul>
+      </div>
+      <span>{{type}}</span>
+    </div>
+    <a href="#" class="list-item js-select-asset">
+      <div class="panel-body">
+        {{#if _id}}
+        <span>{{description}}</span>
+        {{else}}
+        <i class="pe-7s-more"></i>
+        {{/if}}
+      </div>
+    </a>
+  </div>
+  {{/inline}}
+  {{#*inline "goal"}}
+  <div class="panel goal" data-type="{{type}}">
+    <div class="panel-heading panel-built">
+      <div>
+        <div class="dropdown">
+          <div data-toggle="dropdown" class="drag-goal draggable">
+            <i class="pe-7s-more pe-rotate-90"></i>
+          </div>
+          <ul class="dropdown-menu">
+            <li><a href="#" class="js-move-up-goal">{{@root.locals.move_up}}</a></li>
+            <li><a href="#" class="js-move-down-goal">{{@root.locals.move_down}}</a></li>
+            <li class="divider"></li>
+            <li><a href="#" class="js-remove-goal">{{@root.locals.remove}}</a></li>
+          </ul>
+        </div>
+        <strong>
+          {{#is type "user_input"}}{{@root.locals.goal-type.user_input}}{{/is}}
+          {{#is type "txn_inbound"}}{{@root.locals.goal-type.txn_inbound}}{{/is}}
+          {{#is type "txn_outbound"}}{{@root.locals.goal-type.txn_outbound}}{{/is}}
+          {{#is type "card_validation"}}{{@root.locals.goal-type.card_validation}}{{/is}}
+        </strong>
+      </div>
+      <textarea rows="3" class="data-desc" placeholder="{{@root.locals.goal}}">{{description}}</textarea>
+    </div>
+    {{#is type "user_input"}}
+    <div class="panel-body">
+      <strong>{{@root.locals.options}}:</strong><br>
+      <div class="radio">
+        <label><input type="radio" class="data-options_type" name="goal{{idx}}-options-type" value="radio" {{#is options_type "radio"}}checked="checked"{{/is}}>{{@root.locals.options-type.radio}}</label>
+      </div>
+      <div class="radio">
+        <label><input type="radio" class="data-options_type" name="goal{{idx}}-options-type" value="checkbox" {{#is options_type "checkbox"}}checked="checked"{{/is}}>{{@root.locals.options-type.checkbox}}</label>
+      </div>
+      <ol class="sortable list-unstyled user-options">
+        {{#each options}}
+        {{> option}}
+        {{/each}}
+        <li class="add-user-option">
+          <input type="text" class="js-option-value" placeholder="{{@root.locals.add}}">
+        </li>
+      </ol>
+      <strong>{{@root.locals.comment}}:</strong><br>
+      <div class="checkbox">
+        <label><input type="checkbox" class="data-allow_comment" {{#is allow_comment true}}checked="checked"{{/is}}><span>{{@root.locals.test-page.allow_comment}}</span></label>
+      </div>
+      <div class="checkbox">
+        <label><input type="checkbox" class="data-require_comment" {{#is require_comment true}}checked="checked"{{/is}}><span>{{@root.locals.test-page.require_comment}}</span></label>
+      </div>
+    </div>
+    {{/is}}
+    {{#is type "txn_inbound"}}
+    <div class="panel-body">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th colspan="2">{{@root.locals.match}}</th>
+          </tr>
+          <tr>
+            <th>{{@root.locals.field}}</th>
+            <th>{{@root.locals.validation}}</th>
+          </th>
+        </thead>
+        <tbody>
+          {{#each request.matches}}
+          {{> match}}
+          {{/each}}
+          <tr class="add-match">
+            <td colspan="2">
+              <input type="text" class="js-add-match-field" placeholder="{{@root.locals.add}}">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th colspan="2">{{@root.locals.validation}}</th>
+          </tr>
+          <tr>
+            <th>{{@root.locals.field}}</th>
+            <th>{{@root.locals.validation}}</th>
+          </th>
+        </thead>
+        <tbody>
+          {{#each request.validations}}
+          {{> validation}}
+          {{/each}}
+          <tr class="add-validation">
+            <td colspan="2">
+              <input type="text" class="js-add-validation-field" placeholder="{{@root.locals.add}}">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <textarea rows="15" class="data-response code" placeholder="{{@root.locals.response}}" wrap="soft">{{response.data}}</textarea>
+      <label class="inline">
+        <span>{{@root.locals.delay}} (ms)</span>
+        <input type="number" class="data-delay" value="{{response.delay}}">
+      </label>
+      <label class="inline">
+        <span>{{@root.locals.chain}}</span>
+        <select class="data-chainMode">
+          <option value="allow" {{#is response.chainMode "allow"}}selected{{/is}}>{{@root.locals.allow}}</option>
+          <option value="prevent" {{#is response.chainMode "prevent"}}selected{{/is}}>{{@root.locals.prevent}}</option>
+        </select>
+      </label>
+    </div>
+    {{/is}}
+    {{#is type "txn_outbound"}}
+    <div class="panel-body">
+      <input type="text" class="data-target" value="{{request.target}}" placeholder="{{@root.locals.target}}">
+      <textarea rows="15" class="data-request code" placeholder="{{@root.locals.request}}" wrap="soft">{{request.data}}</textarea>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th colspan=2>{{@root.locals.validation}}</th>
+          </tr>
+          <tr>
+            <th>{{@root.locals.field}}</th>
+            <th>{{@root.locals.validation}}</th>
+          </th>
+        </thead>
+        <tbody>
+          {{#each response.validations}}
+          {{> validation}}
+          {{/each}}
+          <tr class="add-validation">
+            <td colspan="2">
+              <input type="text" class="js-add-validation-field" placeholder="{{@root.locals.add}}">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <label class="inline">
+        <span>{{@root.locals.delay}} (ms)</span>
+        <input type="number" class="data-delay" value="{{response.delay}}">
+      </label>
+      <label class="inline">
+        <span>{{@root.locals.timeout}} (ms)</span>
+        <input type="number" class="data-timeout" value="{{response.timeout}}">
+      </label>
+    </div>
+    {{/is}}
+    {{#is type "card_validation"}}
+    <div class="panel-body">
+      <input type="text" class="data-label" value="{{label}}" placeholder="{{@root.locals.identification}}">
+      <table class="table table-bordered">
+        <colgroup>
+          <col style="width:40%">
+          <col style="width:50%">
+          <col style="width:10%">
+        </colgroup>
+        <thead>
+          <tr>
+            <th colspan=3>{{@root.locals.validation}}</th>
+          </tr>
+          <tr>
+            <th>{{@root.locals.request}}</th>
+            <th>{{@root.locals.response}}</th>
+            <th>SW</th>
+          </th>
+        </thead>
+        <tbody>
+          {{#each validations}}
+          {{> card_validation}}
+          {{/each}}
+          <tr class="add-validation">
+            <td colspan="3">
+              <a href="#" class="js-add-card-validation btn btn-default">{{@root.locals.add}}</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {{/is}}
+  </div>
+  {{/inline}}
+  {{#*inline "option"}}
+  <li class="user-option">
+    <div data-toggle="dropdown" class="drag-user-option draggable">
+      <i class="pe-7s-more pe-rotate-90"></i>
+      <span class="data-value">{{#if value}}{{value}}{{else}}{{this}}{{/if}}</span>
+    </div>
+    <ul class="dropdown-menu">
+      <li><a href="#" class="js-move-up-option">{{@root.locals.move_up}}</a></li>
+      <li><a href="#" class="js-move-down-option">{{@root.locals.move_down}}</a></li>
+      <li class="divider"></li>
+      <li><a href="#" class="js-remove-option">{{@root.locals.remove}}</a></li>
+    </ul>
+  </li>
+  {{/inline}}
+  {{#*inline "match"}}
+  <tr class="match">
+    <td>
+      <div class="dropdown">
+        <div data-toggle="dropdown" class="drag-row draggable">
+          <i class="pe-7s-more pe-rotate-90"></i>
+          <span class="js-option-value"></span>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-move-up-row">{{@root.locals.move_up}}</a></li>
+          <li><a href="#" class="js-move-down-row">{{@root.locals.move_down}}</a></li>
+          <li class="divider"></li>
+          <li><a href="#" class="js-remove-row">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+      <span class="data-field">{{field}}</span>
+    </td>
+    <td><input type="text" class="data-expr" value="{{expr}}"></td>
+  </tr>
+  {{/inline}}
+  {{#*inline "validation"}}
+  <tr class="validation">
+    <td>
+      <div class="dropdown">
+        <div data-toggle="dropdown" class="drag-row draggable">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-move-up-row">{{@root.locals.move_up}}</a></li>
+          <li><a href="#" class="js-move-down-row">{{@root.locals.move_down}}</a></li>
+          <li class="divider"></li>
+          <li><a href="#" class="js-remove-row">{{@root.locals.remove}}</a></li>
+        </ul>
+      </div>
+      <span class="data-field">{{field}}</span>
+    </td>
+    <td>
+      <input type="text" class="data-expr" value="{{expr}}">
+    </td>
+  </tr>
+  {{/inline}}
+  {{#*inline "card_validation"}}
+  <tr class="validation">
+    <td>
+      <div style="display: flex;">
+        <div class="dropdown" style="margin-right: 5px;">
+          <div data-toggle="dropdown" class="drag-row draggable">
+            <i class="pe-7s-more pe-rotate-90"></i>
+          </div>
+          <ul class="dropdown-menu">
+            <li><a href="#" class="js-move-up-row">{{@root.locals.move_up}}</a></li>
+            <li><a href="#" class="js-move-down-row">{{@root.locals.move_down}}</a></li>
+            <li class="divider"></li>
+            <li><a href="#" class="js-remove-row">{{@root.locals.remove}}</a></li>
+          </ul>
+        </div>
+        <div style="flex-grow: 100;">
+          <input type="text" class="data-request" placeholder="{{@root.locals.match}}" value="{{request}}">
+          <input type="text" class="data-expr" placeholder="{{@root.locals.validation}}" value="{{expr}}">
+        <div>
+      </div>
+    </td>
+    <td>
+      <select class="data-responseType">
+        <option value="static" {{#is responseType "static"}}selected{{/is}}>Static</option>
+        <option value="emv_internal_authenticate" {{#is responseType "emv_internal_authenticate"}}selected{{/is}}>EMV Internal Authenticate</option>
+      </select>
+      {{#is responseType "static"}}
+      <textarea type="text" class="data-response" placeholder="{{@root.locals.response}}" rows="3">{{response}}</textarea>
+      {{/is}}
+      {{#is responseType "emv_internal_authenticate"}}
+      <input type="text" class="data-kmod" placeholder="{{@root.locals.keyModulus}}" value="{{kMod}}">
+      <input type="text" class="data-kexp" placeholder="{{@root.locals.keyExponent}}" value="{{kExp}}">
+      {{/is}}
+    </td>
+    <td>
+      <input type="text" class="data-sw" placeholder="SW" value="{{sw}}">
+    </td>
+  </tr>
+  {{/inline}}
+</script>

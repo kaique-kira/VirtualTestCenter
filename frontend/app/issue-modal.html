@@ -1,0 +1,50 @@
+<div class="modal-dialog modal-info modal-lg">
+  <div class="modal-content">
+    <div class="color-line"></div>
+    <div class="modal-header">
+      <h4 class="modal-title">{{@root.locals.issue}}</h4>
+      {{#if list}}
+      <input type="text" placeholder="{{@root.locals.search}}" class="js-search-item" style="padding: 8px 5px;">
+      {{/if}}
+    </div>
+    {{#if list}}
+    {{#if issues}}
+    <div class="issues">
+      {{#each issues}}
+      <div class="issue list-item" data-id="{{_id}}">
+        <a href="#" class="js-select-issue item-span">
+          <div class="modal-body">
+            <span>{{name}}</span>
+          </div>
+        </a>
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <div class="modal-body empty">
+      {{@root.locals.no_results}}
+    </div>
+    {{/if}}
+    {{/if}}
+    {{#if issue}}
+    <div class="modal-body edit" data-id="{{issue._id}}">
+      <select class="data-type" style="width: 100%; padding: 10px 5px; margin-bottom: 10px;" required>
+        <option value="-1" disabled selected hidden>{{locals.type}}</option>
+        {{#each domain.issues}}
+        <option value="{{type}}" {{#is @root.issue.type type}}selected{{/is}}>{{type}}</option>
+        {{/each}}
+      </select>
+      <input type="text" value="{{issue.name}}" class="data-name" style="width: 100%; padding: 10px 5px; margin-bottom: 10px;" placeholder="{{@root.locals.name}}">
+      <textarea class="data-desc" rows=5 style="width: 100%; padding: 10px 5px;" placeholder="{{@root.locals.description}}">{{issue.description}}</textarea>
+    </div>
+    {{/if}}
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">{{@root.locals.close}}</button>
+      {{#if issue}}
+      {{#if @root.save}}
+      <button type="button" class="btn btn-primary js-save">{{@root.locals.save}}</button>
+      {{/if}}
+      {{/if}}
+    </div>
+  </div>
+</div>

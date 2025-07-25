@@ -1,0 +1,530 @@
+<div class="wrapper">
+  <div class="header {{#unless @root._viewUpdate}}animated fadeIn{{/unless}}">
+    <div class="panel">
+      <div class="panel-body">
+        <div class="pull-right actions">
+          <div class="dropdown result" data-toggle="tooltip" data-placement="top" title="{{@root.locals.result}}">
+            <a href="#" data-toggle="dropdown" class="btn {{> btnColor}}">{{> executionStatus}}{{#unless @root._viewReadOnly}}{{#isnt execution.status "closed"}}&nbsp;<span class="caret"></span>{{/isnt}}{{/unless}}</a>
+            {{#unless @root._viewReadOnly}}
+            {{#isnt execution.status "closed"}}
+            <ul class="dropdown-menu">
+              {{#isnt execution.status "waiting"}}
+              <li><a href="#" class="js-set-status-waiting">{{@root.locals.execution-status.waiting}}</a></li>
+              {{/isnt}}
+              {{#isnt execution.status "active"}}
+              <li><a href="#" class="js-set-status-active">{{@root.locals.execution-status.active}}</a></li>
+              {{/isnt}}
+              {{#isnt execution.status "review"}}
+              <li><a href="#" class="js-set-status-review">{{@root.locals.execution-status.review}}</a></li>
+              {{/isnt}}
+              {{#unless execution.result}}
+              <li class="divider"></li>
+              <li><a href="#" class="js-set-result-pass">{{@root.locals.execution-result.pass}}</a></li>
+              <li><a href="#" class="js-set-result-skipped">{{@root.locals.execution-result.skipped}}</a></li>
+              <li><a href="#" class="js-set-result-impact">{{@root.locals.execution-result.impact}}</a></li>
+              <li><a href="#" class="js-set-result-fail">{{@root.locals.execution-result.fail}}</a></li>
+              {{/unless}}
+            </ul>
+            {{/isnt}}
+            {{/unless}}
+          </div>
+          {{#if execution.scenario}}
+          <a href="#" class="js-view-scenario btn btn-primary" style="margin-left: 10px;">{{@root.locals.scenario}}</a>
+          <a href="#" class="js-next-test btn btn-primary" style="margin-left: 10px;">{{@root.locals.next}}</a>
+
+          {{/if}}
+          {{#unless @root._viewReadOnly}}
+          {{#if hosts}}
+          <div class="dropdown" style="margin-left: 10px;" data-toggle="tooltip" data-placement="top" title="{{@root.locals.monitor}}">
+            <a href="#" class="btn btn-primary" data-toggle="dropdown">
+              <i class="pe-7s-network" style="font-size: 22px"></i>
+            </a>
+            <ul class="dropdown-menu hosts">
+              {{#each hosts}}
+              <li class="host" data-id="{{_id}}"><a href="#" class="js-monitor-txn">{{description}}</a></li>
+              {{/each}}
+            </ul>
+          </div>
+          {{/if}}
+          {{/unless}}
+        </div>
+        <h2 class="font-light" style="display: inline-block; vertical-align: top;">{{@root.locals.execution}}</h2>
+        <div style="display: inline-block;">
+          <dl class="dl-horizontal" style="margin: 0;">
+            <dt>{{@root.locals.username}}</dt>
+            <dd>{{execution.username}}</dd>
+            {{#if execution.started}}
+            <dt>{{@root.locals.started}}</dt>
+            <dd title="{{execution.started}}">{{moment execution.started format='LLL'}}</dd>
+            {{/if}}
+            {{#if execution.finished}}
+            <dt>{{@root.locals.finished}}</dt>
+            <dd title="{{execution.finished}}">{{moment execution.finished format='LLL'}}</dd>
+            {{/if}}
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="execution" data-id="{{execution._id}}" data-modified="{{execution.modified}}" data-scenarioid="{{execution.scenario.id}}" data-status="{{execution.result}}" data-result="{{execution.status}}" data-runId="{{execution.runId}}">
+    <div class="row">
+      <div class="col-lg-6">
+        {{#if execution.runId}}
+        <div class="issues list-group">
+          <div class="list-group-item">
+            <span>{{@root.locals.issues}}</span>
+          </div>
+          {{#each issues}}
+          {{> issue}}
+          {{/each}}
+          {{#if @root._viewEditable}}
+          <div class="link-issue list-group-item">
+            <div class="item-span item-span-center">
+              <a href="#" class="js-link-issue" style="text-align: center;">
+                <i class="pe-7s-more"></i>
+              </a>
+            </div>
+          </div>
+          {{else}}
+          {{#unless issues}}
+          <div class="list-group-item">
+            <span>{{@root.locals.no_results}}<span>
+          </div>
+          {{/unless}}
+          {{/if}}
+        </div>
+        {{/if}}
+        <div class="panel">
+          <div class="panel-body">
+            <strong>
+              {{#if execution.scenario}}
+              <span>{{execution.scenario.name}}</span><br>
+              {{/if}}
+              <span>{{execution.test.label}}</span>
+            </strong><br>
+            <span>{{execution.test.title}}</span>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-6">
+                <span class="markdown">{{marked execution.test.description}}</span>
+              </div>
+              <div class="col-md-6">
+                <strong>{{@root.locals.comment}}:</strong><br>
+                <textarea class="data-comment" rows=5 style="width: 100%" {{#unless @root._viewEditable}}disabled{{/unless }}>{{execution.test.comment}}</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="assets">
+          {{#each execution.test.assets}}
+            {{> asset}}
+          {{/each}}
+        </div>
+        <div class="user-goals">
+          {{#each execution.test._userGoals}}
+          {{> goal_user}}
+          {{/each}}
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="data-goals">
+          {{#each execution.test._dataGoals}}
+          {{#is type "txn_inbound"}}{{> goal_inbound}}{{/is}}
+          {{#is type "txn_outbound"}}{{> goal_outbound}}{{/is}}
+          {{#is type "card_validation"}}{{> card_validation}}{{/is}}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "btnColor"}}
+  {{#is execution.status "waiting"}}btn-default{{/is}}
+  {{#is execution.status "active"}}btn-primary{{/is}}
+  {{#is execution.status "review"}}btn-primary2{{/is}}
+  {{#is execution.status "finished"}}
+  {{#if execution.result}}
+  {{#is execution.result "pass"}}btn-success{{/is}}
+  {{#is execution.result "skipped"}}btn-warning2{{/is}}
+  {{#is execution.result "impact"}}btn-warning{{/is}}
+  {{#is execution.result "fail"}}btn-danger2{{/is}}
+  {{else}}
+  btn-default
+  {{/if}}
+  {{/is}}
+  {{#is execution.status "closed"}}
+  {{#if execution.result}}
+  {{#is execution.result "pass"}}btn-success{{/is}}
+  {{#is execution.result "skipped"}}btn-warning2{{/is}}
+  {{#is execution.result "impact"}}btn-warning{{/is}}
+  {{#is execution.result "fail"}}btn-danger2{{/is}}
+  {{else}}
+  btn-default
+  {{/if}}
+  {{/is}}
+  {{/inline}}
+  {{#*inline "executionStatus"}}
+  {{#is execution.status "waiting"}}{{@root.locals.execution-status.waiting}}{{/is}}
+  {{#is execution.status "active"}}{{@root.locals.execution-status.active}}{{/is}}
+  {{#is execution.status "review"}}{{@root.locals.execution-status.review}}{{/is}}
+  {{#is execution.status "finished"}}{{@root.locals.execution-status.finished}}{{/is}}
+  {{#is execution.status "closed"}}{{@root.locals.execution-status.closed}}{{/is}}
+  {{#is execution.result "pass"}} | {{@root.locals.execution-result.pass}}{{/is}}
+  {{#is execution.result "skipped"}} | {{@root.locals.execution-result.skipped}}{{/is}}
+  {{#is execution.result "impact"}} | {{@root.locals.execution-result.impact}}{{/is}}
+  {{#is execution.result "fail"}} | {{@root.locals.execution-result.fail}}{{/is}}
+  {{/inline}}
+  {{#*inline "txnIcon"}}
+  {{#is type "inbound"}}{{#if response.chained}}pe-7s-shuffle{{else}}pe-7s-cloud-upload{{/if}}{{/is}}
+  {{#is type "outbound"}}pe-7s-cloud-download{{/is}}
+  {{/inline}}
+  {{#*inline "txnStatus"}}
+  {{#is status "created"}}{{@root.locals.txn-status.created}}{{/is}}
+  {{#is status "received"}}{{@root.locals.txn-status.received}}{{/is}}
+  {{#is status "match"}}{{@root.locals.txn-status.match}}{{/is}}
+  {{#is status "delay"}}{{@root.locals.txn-status.delay}}{{/is}}
+  {{#is status "request"}}{{@root.locals.txn-status.request}}{{/is}}
+  {{#is status "chaining"}}{{@root.locals.txn-status.chaining}}{{/is}}
+  {{#is status "chained"}}{{@root.locals.txn-status.chained}}{{/is}}
+  {{#is status "responded"}}{{@root.locals.txn-status.responded}}{{/is}}
+  {{#is status "finished"}}{{@root.locals.txn-status.finished}}{{/is}}
+  {{#is status "error"}}{{@root.locals.txn-status.error}}{{/is}}
+  {{/inline}}
+  {{#*inline "issue"}}
+  <div class="issue list-group-item" data-id="{{_id}}">
+    {{#unless @root._viewReadOnly}}
+    <div class="list-group-item-span-middle" style="width: 20px;">
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-unlink-issue {{#unless @root._viewEditable}}disabled{{/unless }}">{{@root.locals.unlink}}</a></li>
+        </ul>
+      </div>
+    </div>
+    {{/unless}}
+    <div class="item-span">
+      <a href="#" class="js-edit-issue">
+        <span class="text-ellipsis">{{name}}</span>
+      </a>
+    </div>
+  </div>
+  {{/inline}}
+  {{#*inline "asset"}}
+  <div class="panel asset" data-id="{{_id}}" data-type="{{type}}">
+    <a href="#" class="js-select-asset list-item {{#isnt @root.execution.status 'waiting'}}disabled{{/isnt}}">
+      <div class="panel-body">
+        <strong>{{type}}</strong><br>
+        {{#if _id}}
+        <span class="description">{{description}}</span>
+        {{else}}
+        <div style="text-align: center;"><i class="pe-7s-more"></i></div>
+        {{/if}}
+      </div>
+    </a>
+  </div>
+  {{/inline}}
+  {{#* inline "goal_user"}}
+  <div class="panel goal" data-idx="{{_idx}}" data-type="{{type}}">
+    <div class="panel-heading panel-built">
+      <span>{{description}}</span>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-lg-4">
+          <strong>{{@root.locals.options}}:</strong><br>
+          <div class="user-options">
+            {{#is options_type "radio"}}
+            {{#each options}}
+            <div class="radio">
+              <label><input type="radio" name="goal{{../_idx}}" class="option" data-idx="{{@index}}" {{#inArray ../choices @index}}checked="checked"{{/inArray}} {{#unless @root._viewEditable}}disabled{{/unless }}>{{this}}</label>
+            </div>
+            {{/each}}
+            {{/is}}
+            {{#is options_type "checkbox"}}
+            {{#each options}}
+            <div class="checkbox">
+              <label><input type="checkbox" name="goal{{../_idx}}" class="option" data-idx="{{@index}}" {{#inArray ../choices @index}}checked="checked"{{/inArray}} {{#unless @root._viewEditable}}disabled{{/unless }}>{{this}}</label>
+            </div>
+            {{/each}}
+            {{/is}}
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <strong>{{@root.locals.comment}}:</strong><br>
+          <textarea class="data-comment" rows=3 style="width: 100%" {{#unless @root._viewEditable}}disabled{{/unless }}>{{comment}}</textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/inline}}
+  {{#* inline "goal_inbound"}}
+  <div class="panel goal" data-idx="{{_idx}}" data-type="{{type}}">
+    <div class="panel-heading panel-built">
+      {{#unless @root._viewReadOnly}}
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-clear-goal {{#unless @root._viewEditable}}disabled{{/unless }}">{{@root.locals.clear}}</a></li>
+          <li><a href="#" class="js-clear-goals {{#unless @root._viewEditable}}disabled{{/unless }}">{{@root.locals.clearall}}</a></li>
+          
+        </ul>
+      </div>
+      {{/unless}}
+      <div class="pull-right">
+        <a href="#" class="js-toggle-neutral no-decoration">
+          <i class="pe-7s-less neutral" data-toggle="tooltip" data-placement="top" title="{{@root.locals.execution-page.neutral_tooltip}}"></i>
+        </a>
+        <span>{{_totalCount}}</span>
+        <span>&nbsp;/&nbsp;</span>
+        <a href="#" class="js-toggle-pass no-decoration" data-toggle="tooltip" data-placement="top" title="{{@root.locals.execution-page.pass_tooltip}}">
+          <i class="pe-7s-check pass"></i>
+        </a>
+        <span>{{_passCount}}</span>
+        <span>&nbsp;/&nbsp;</span>
+        <i class="pe-7s-close-circle fail" data-toggle="tooltip" data-placement="top" title="{{@root.locals.execution-page.fail_tooltip}}"></i>
+        <span>{{_failCount}}</span>
+      </div>
+      <span class="font-light">{{@root.locals.goal-type.txn_inbound}}:</span>
+      <span>{{description}}</span>
+    </div>
+    {{#with txn}}
+    {{> txn}}
+    {{else}}
+    <a href="#" class="txn js-view-txn list-item">
+      <div class="panel-body">
+        <div class="color-strip bg-red-deep"></div>
+        <i class="inline-icon pe-7s-cloud-upload"></i>
+      </div>
+    </a>
+    {{/with}}
+    <div id="goal{{_idx}}_options" class="collapse">
+      <div></div>
+      <div class="panel-body panel-body-narrow collapse">
+        <label class="inline">
+          <span>{{@root.locals.chain}}</span>&nbsp;
+          <select class="data-chainMode" {{#isnt @root.execution.status "waiting"}}disabled{{/isnt}}>
+            <option value="allow" {{#is response.chainMode "allow"}}selected{{/is}}>{{@root.locals.allow}}</option>
+            <option value="prevent" {{#is response.chainMode "prevent"}}selected{{/is}}>{{@root.locals.prevent}}</option>
+            <option value="force" {{#is response.chainMode "force"}}selected{{/is}}>{{@root.locals.force}}</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <a href="#goal{{_idx}}_options" data-toggle="collapse" class="panel-body panel-body-separator">.&nbsp;.&nbsp;.</a>
+    <div class="panel-body">
+      <table class="table" style="margin-bottom: 10px">
+        <thead>
+          <tr>
+            <th style="width: 20px"></th>
+            <th>{{@root.locals.field}}</th>
+            <th>{{@root.locals.validation}}</th>
+            <th>{{@root.locals.value}}</th>
+          </th>
+        </thead>
+        <tbody class="validations">
+          {{#each request.validations}}
+          <tr class="validation {{#if result}}{{result}}{{else}}neutral{{/if}}" data-result="{{result}}">
+            <td style="width: 20px; padding: 6px 0 0 2px;">
+              {{#if result}}
+              {{#is result "pass"}}<i class="pe-7s-check pass"></i>{{/is}}
+              {{#is result "fail"}}<i class="pe-7s-close-circle fail"></i>{{/is}}
+              {{else}}
+              <i class="pe-7s-less neutral"></i>
+              {{/if}}
+            </td>
+            <td><div class="text-ellipsis-hover"><span style="float: right;">{{field}}</span></div></td>
+            <td><span class="text-ellipsis-hover">{{#if exprValue}}{{exprValue}}{{else}}{{expr}}{{/if}}</span></td>
+            <td><span class="text-ellipsis-hover">{{value}}</span></td>
+          </tr>
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr class="hidden-results">
+            <td colspan="4">{{@root.locals.hidden_results}}</td>
+          </tr>
+        </tfoot>
+      </table>
+      <strong>{{@root.locals.comment}}:</strong><br>
+      <textarea class="data-comment" rows="3" {{#unless @root._viewEditable}}disabled{{/unless }}>{{comment}}</textarea>
+    </div>
+  </div>
+  {{/inline}}
+  {{#* inline "goal_outbound"}}
+  <div class="panel goal" data-idx="{{_idx}}" data-type="{{type}}">
+    <div class="panel-heading panel-built">
+      {{#unless @root._viewReadOnly}}
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-clear-goal {{#unless @root._viewEditable}}disabled{{/unless }}">{{@root.locals.clear}}</a></li>
+        </ul>
+      </div>
+      {{/unless}}
+      <div class="pull-right">
+        <a href="#" class="js-toggle-neutral no-decoration">
+          <i class="pe-7s-less neutral" data-toggle="tooltip" data-placement="top" title="{{@root.locals.execution-page.neutral_tooltip}}"></i>
+        </a>
+        <span>{{_totalCount}}</span>
+        <span>&nbsp;/&nbsp;</span>
+        <a href="#" class="js-toggle-pass no-decoration" data-toggle="tooltip" data-placement="top" title="{{@root.locals.execution-page.pass_tooltip}}">
+          <i class="pe-7s-check pass"></i>
+        </a>
+        <span>{{_passCount}}</span>
+        <span>&nbsp;/&nbsp;</span>
+        <i class="pe-7s-close-circle fail" data-toggle="tooltip" data-placement="top" title="{{@root.locals.execution-page.fail_tooltip}}"></i>
+        <span>{{_failCount}}</span>
+      </div>
+      <span class="font-light">{{@root.locals.goal-type.txn_outbound}} [{{request.target}}]:</span>
+      <span>{{description}}</span>
+    </div>
+    {{#with txn}}
+    {{> txn}}
+    {{else}}
+    <a href="#" class="txn js-view-txn list-item">
+      <div class="panel-body">
+        <div class="color-strip bg-red-deep"></div>
+        <i class="inline-icon pe-7s-cloud-download"></i>
+      </div>
+    </a>
+    {{/with}}
+    <div class="panel-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width: 20px"></th>
+            <th>{{@root.locals.field}}</th>
+            <th>{{@root.locals.validation}}</th>
+            <th>{{@root.locals.value}}</th>
+          </th>
+        </thead>
+        <tbody class="validations">
+          {{#each response.validations}}
+          <tr class="validation {{#if result}}{{result}}{{else}}neutral{{/if}}" data-result="{{result}}">
+            <td style="width: 20px; padding: 6px 0 0 2px;">
+              {{#if result}}
+              {{#is result "pass"}}<i class="pe-7s-check pass"></i>{{/is}}
+              {{#is result "fail"}}<i class="pe-7s-close-circle fail"></i>{{/is}}
+              {{else}}
+              <i class="pe-7s-less neutral"></i>
+              {{/if}}
+            </td>
+            <td><div class="text-ellipsis-hover"><span style="float: right;">{{field}}</span></div></td>
+            <td><span class="text-ellipsis-hover">{{#if exprValue}}{{exprValue}}{{else}}{{expr}}{{/if}}</span></td>
+            <td><span class="text-ellipsis-hover">{{value}}</span></td>
+          </tr>
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr class="hidden-results">
+            <td colspan="4">{{@root.locals.hidden_results}}</td>
+          </tr>
+        </tfoot>
+      </table>
+      <strong>{{@root.locals.comment}}:</strong><br>
+      <textarea class="data-comment" rows="3" style="width: 100%" {{#unless @root._viewEditable}}disabled{{/unless }}>{{comment}}</textarea>
+    </div>
+  </div>
+  {{/inline}}
+  {{#* inline "card_validation"}}
+  <div class="panel goal" data-idx="{{_idx}}" data-type="{{type}}">
+    <div class="panel-heading panel-built">
+      {{#unless @root._viewReadOnly}}
+      <div class="dropdown">
+        <div data-toggle="dropdown">
+          <i class="pe-7s-more pe-rotate-90"></i>
+        </div>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="js-clear-goal {{#unless @root._viewEditable}}disabled{{/unless }}">{{@root.locals.clear}}</a></li>
+        </ul>
+      </div>
+      {{/unless}}
+      <div class="pull-right">
+        <a href="#" class="js-toggle-neutral no-decoration">
+          <i class="pe-7s-less neutral" data-toggle="tooltip" data-placement="top" title="{{@root.locals.execution-page.neutral_tooltip}}"></i>
+        </a>
+        <span>{{_totalCount}}</span>
+        <span>&nbsp;/&nbsp;</span>
+        <a href="#" class="js-toggle-pass no-decoration" data-toggle="tooltip" data-placement="top" title="{{@root.locals.execution-page.pass_tooltip}}">
+          <i class="pe-7s-check pass"></i>
+        </a>
+        <span>{{_passCount}}</span>
+        <span>&nbsp;/&nbsp;</span>
+        <i class="pe-7s-close-circle fail" data-toggle="tooltip" data-placement="top" title="{{@root.locals.execution-page.fail_tooltip}}"></i>
+        <span>{{_failCount}}</span>
+      </div>
+      <span class="font-light">{{@root.locals.goal-type.card_validation}}:</span>
+      <span>{{description}}</span>
+    </div>
+    <a href="#" class="js-view-card list-item">
+      <div class="panel-body">
+        <div class="color-strip {{#if card}}bg-green{{else}}bg-red-deep{{/if}}"></div>
+        <div style="display: flex;">
+          <i class="inline-icon pe-7s-credit"></i>
+          <div class="js-progress progress" style="flex: 1; margin: -2px 0; display: none;">
+            <div class="progress-bar"></div>
+          </div>
+          <div class="js-status" style="position: absolute; left: 40px; right: 0; text-align: center; color: black;"></div>
+          {{#with card}}
+          <span class="label label-default" style="position: absolute; right: 0;">{{moment instant format="L LTS"}}</span>
+          {{/with}}
+        </div>
+      </div>
+    </a>
+    <div class="panel-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width: 20px"></th>
+            <th>{{@root.locals.request}}</th>
+            <th>{{@root.locals.validation}}</th>
+            <th>{{@root.locals.value}}</th>
+          </th>
+        </thead>
+        <tbody class="validations">
+          {{#each validations}}
+          <tr class="validation {{#if result}}{{result}}{{else}}neutral{{/if}}" data-result="{{result}}">
+            <td style="width: 20px; padding: 6px 0 0 2px;">
+              {{#if result}}
+              {{#is result "pass"}}<i class="pe-7s-check pass"></i>{{/is}}
+              {{#is result "fail"}}<i class="pe-7s-close-circle fail"></i>{{/is}}
+              {{else}}
+              <i class="pe-7s-less neutral"></i>
+              {{/if}}
+            </td>
+            <td><div class="text-ellipsis-hover">{{request}}</div></td>
+            <td><span class="text-ellipsis-hover">{{#if exprValue}}{{exprValue}}{{else}}{{expr}}{{/if}}</span></td>
+            <td><span class="text-ellipsis-hover">{{value}}</span></td>
+          </tr>
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr class="hidden-results">
+            <td colspan="4">{{@root.locals.hidden_results}}</td>
+          </tr>
+        </tfoot>
+      </table>
+      <strong>{{@root.locals.comment}}:</strong><br>
+      <textarea class="data-comment" rows="3" style="width: 100%" {{#unless @root._viewEditable}}disabled{{/unless }}>{{comment}}</textarea>
+    </div>
+  </div>
+  {{/inline}}
+  {{#*inline "txn"}}
+  <a href="#" class="txn js-view-txn list-item" data-id="{{_id}}" data-modified="{{modified}}">
+    <div class="panel-body">
+      <div class="color-strip {{#if executionId}}bg-green{{else}}bg-red-deep{{/if}}"></div>
+      <i class="inline-icon {{> txnIcon}}"></i>
+      {{#if status}}<span class="label {{#is status 'error'}}label-danger{{else}}label-primary{{/is}}">{{> txnStatus}}</span>&nbsp;{{/if}}
+      <span>{{hostType}}://{{remoteAddress}}:{{remotePort}} {{method}} {{url}}</span>
+      <div class="pull-right"><span class="label label-default">{{moment instant format="L LTS"}}</span></div>
+    </div>
+  </a>
+  {{/inline}}
+</script>

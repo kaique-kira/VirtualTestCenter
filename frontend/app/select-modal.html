@@ -1,0 +1,53 @@
+<div class="modal-dialog modal-info">
+  <div class="modal-content">
+    <div class="color-line"></div>
+    <div class="modal-header">
+      <input type="text" placeholder="{{@root.locals.search}}" class="js-search-item pull-right" style="padding: 8px 5px;">
+      <h4 class="modal-title">{{@root.locals.select}} {{collection}}</h4>
+    </div>
+    {{> selection}}
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">{{@root.locals.close}}</button>
+    </div>
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "selection"}}
+  <div class="selection">
+    {{#if @root.select.domain}}
+    <div class="list-item" data-id="{{domain.domainId}}">
+      <a href="#" class="item-span" data-toggle="dropdown">
+        <div class="modal-body">
+          <i class="inline-icon pe-7s-culture"></i>
+          <span>{{domain.domainName}}</span>
+        </div>
+      </a>
+      <ul class="dropdown-menu">
+        {{#each domains}}
+        <li class="domain" data-id="{{domainId}}">
+          <a href="#" class="js-select-domain {{#is domainId @root.domain._id}}font-bold{{/is}}">{{domainName}}</a>
+        </li>
+        {{/each}}
+      </ul>
+    </div>
+    {{/if}}
+    {{#if items}}
+    <div class="items">
+      {{#each items}}
+      <div class="item list-item" data-id="{{_id}}">
+        <a href="#" class="js-select-item item-span">
+          <div class="modal-body">
+            <span>{{description}}</span>
+          </div>
+        </a>
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <div class="modal-body empty">
+      {{@root.locals.no_results}}
+    </div>
+    {{/if}}
+  </div>
+  {{/inline}}
+</script>

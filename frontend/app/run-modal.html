@@ -1,0 +1,76 @@
+<div class="modal-dialog modal-info modal-lg">
+  <div class="modal-content">
+    <div class="color-line"></div>
+    <div class="modal-header">
+      {{#if select}}
+      <input type="text" placeholder="{{locals.search}}" class="js-search-run pull-right" style="padding: 8px 5px;">
+      {{/if}}
+      <h4 class="modal-title">{{@root.locals.run}}</h4>
+    </div>
+    {{> selection}}
+    {{#if run}}
+    <div class="modal-body edit" data-id="{{run.id}}">
+      <select class="data-status" required style="width: 100%; padding: 10px 5px; margin-bottom: 10px;">
+        <option value="open" {{#is run.status "open"}}selected{{/is}}>{{@root.locals.run-status.open}}</option>
+        <option value="active" {{#is run.status "active"}}selected{{/is}}>{{@root.locals.run-status.active}}</option>
+        <option value="closed" {{#is run.status "closed"}}selected{{/is}}>{{@root.locals.run-status.closed}}</option>
+      </select>
+      <input class="data-name" type="text" value="{{run.name}}" style="width: 100%; padding: 10px 5px; margin-bottom: 10px;" placeholder="{{@root.locals.name}}">
+      <textarea class="data-desc" rows=5 style="width: 100%; padding: 10px 5px;" placeholder="{{@root.locals.description}}">{{run.description}}</textarea>
+    </div>
+    {{/if}}
+    <div class="modal-footer">
+      <button type="button" class="js-cancel btn btn-default" data-dismiss="modal">{{@root.locals.cancel}}</button>
+      <button type="button" class="js-save btn btn-primary">{{@root.locals.save}}</button>
+    </div>
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "selection"}}
+  <div class="selection">
+    {{#if select}}
+    <div class="list-item" data-id="{{domain.domainId}}">
+      <a href="#" class="list-item-span" data-toggle="dropdown">
+        <div class="modal-body">
+          <i class="inline-icon pe-7s-culture"></i>
+          <span>{{domain.domainName}}</span>
+        </div>
+      </a>
+      <ul class="dropdown-menu">
+        {{#each domains}}
+        <li class="domain" data-id="{{domainId}}">
+          <a href="#" class="js-select-domain {{#is domainId @root.domain._id}}font-bold{{/is}}">{{domainName}}</a>
+        </li>
+        {{/each}}
+      </ul>
+      {{#if select.allow_none}}
+      <a href="#" class="js-select-none list-item-span4">
+        <div class="modal-body text-info">
+          <i class="inline-icon pe-7s-drop"></i>
+          <span>{{@root.locals.individual}}</span>
+        </div>
+      </a>
+      {{/if}}
+    </div>
+    {{#if runs}}
+    <div class="runs">
+      {{#each runs}}
+      <div class="run list-item" data-id="{{_id}}">
+        <a href="#" class="js-select-run list-item-span">
+          <div class="modal-body text-info">
+            <i class="inline-icon pe-7s-upload pe-rotate-90"></i>
+            <span>{{name}}</span>
+          </div>
+        </a>
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <div class="modal-body empty">
+      {{locals.no_results}}
+    </div>
+    {{/if}}
+    {{/if}}
+  </div>
+  {{/inline}}
+</script>

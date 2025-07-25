@@ -1,0 +1,63 @@
+<div class="wrapper">
+  <div class="header animated fadeIn">
+    <div class="panel">
+      <div class="panel-body">
+        <div class="pull-right actions">
+          <a href="#" class="btn btn-danger js-save">{{locals.save}}</a>
+        </div>
+        <h2 class="font-light">{{locals.scenario}}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="animate-panel">
+    <div class="scenario panel" data-id="{{scenario._id}}">
+      <div class="panel-heading panel-built">
+        <input type="text" value="{{scenario.name}}" class="data-name" style="width: 100%;" placeholder="{{locals.name}}">
+      </div>
+      <div class="panel-body">
+        <textarea class="data-desc" rows=5 style="width: 100%;" placeholder="{{locals.description}}">{{scenario.description}}</textarea>
+      </div>
+    </div>
+  </div>
+  <div class="tests list-group">
+    {{#each tests}}
+    {{> test}}
+    {{/each}}
+    <div class="add-test list-group-item">
+      <a href="#" class="js-add-test" style="text-align: center;">
+        <i class="pe-7s-more"></i>
+      </a>
+    </div>
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+  {{#*inline "test"}}
+  <div class="test list-group-item" data-id="{{_id}}">
+    <div class="list-group-item-span-middle" style="width: 20px">
+      <div data-toggle="dropdown">
+        <i class="pe-7s-more pe-rotate-90"></i>
+      </div>
+      <ul class="dropdown-menu">
+        <li><a href="#" class="js-move-up-test">{{@root.locals.move_up}}</a></li>
+        <li><a href="#" class="js-move-down-test">{{@root.locals.move_down}}</a></li>
+        <li class="divider"></li>
+        <li><a href="#" class="js-unlink-test">{{@root.locals.unlink}}</a></li>
+      </ul>
+    </div>
+    <div class="list-group-item-span text-ellipsis" style="width: 50%">
+      <span class="js-label">{{label}}</span><br>
+      <span>{{title}}</span>
+    </div>
+    {{#each assets}}
+    <div class="asset list-group-item-span text-ellipsis" style="width: 10%;">
+      <span>{{type}}</span><br>
+      {{#if description}}
+      <span>{{description}}</span>
+      {{else}}
+      <span>{{@root.locals.empty}}</span>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{/inline}}
+</script>

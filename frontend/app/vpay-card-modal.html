@@ -1,0 +1,87 @@
+<div class="modal-dialog modal-info modal-lg" role="document">
+  <div class="modal-content">
+    <div class="color-line"></div>
+    <div class="modal-header">
+      <h4 class="modal-title">{{@root.locals.vpay_card_modal.title}}</h4>
+    </div>
+    <div id="modal-content" class="modal-body">
+      <div class="border-bottom" style="display: flex;">
+        <div style="width: 76px; font-size: 56px;">
+          <span><i class="pe-7s-credit"></i></span>
+        </div>
+        <div style="flex-grow: 1;">
+          <dl>
+            <dt>{{@root.locals.type}}</dt>
+            <dd>{{card.productStr}}</dd>
+            <dt>{{@root.locals.version}}</dt>
+            <dd>{{card.buildNumber}}</dd>
+            <dt>{{@root.locals.description}}</dt>
+            <dd>{{card.label}}</dd>
+          </dl>
+        </div>
+      </div>
+      {{#each card.log}}
+      <div class="border-bottom" style="display: flex;">
+        <div style="flex: 0 0 46px; align-self: center;">
+          {{#is type "SELECT"}}
+          <i class="pe-7s-loop text-danger2" style="font-size: 26px;"></i>
+          {{/is}}
+          {{#is type "APDU"}}
+          {{#gte match 0}}
+          <i class="pe-7s-check text-success" style="font-size: 26px;"></i>
+          {{else}}
+          <i class="pe-7s-repeat text-primary" style="font-size: 26px;"></i>
+          {{/gte}}
+          {{/is}}
+        </div>
+        <div style="flex-grow: 1;">
+          {{#is type "SELECT"}}
+          <table style="width: 100%;">
+            <colgroup>
+              <col style="width: 90px;">
+            </colgroup>
+            <tbody>
+              <tr>
+                <th>{{@root.locals.counter}}</th>
+                <td><code class="hex">{{counter}}</code></td>
+              </tr>
+              <tr>
+                <th>ATR</th>
+                <td><code class="hex">{{@root.card.atr}}</code></td>
+              </tr>
+          </table>
+          {{/is}}
+          {{#is type "APDU"}}
+          <table style="width: 100%;">
+            <colgroup>
+              <col style="width: 90px;">
+            </colgroup>
+            <tbody>
+              <tr>
+                <th>{{@root.locals.request}}</th>
+                <td><code class="hex">{{request}}</code></td>
+              </tr>
+              {{#if response}}
+              <tr>
+                <th>{{@root.locals.response}}</th>
+                <td><code class="hex">{{response}}</code></td>
+              </tr>
+              {{/if}}
+              <tr>
+                <th>Sw</th>
+                <td><code class="hex">{{sw}}</code></td>
+              </tr>
+            </tbody>
+          </table>
+          {{/is}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">{{@root.locals.close}}</button>
+    </div>
+  </div>
+</div>
+<script type="text/x-handlebars-template">
+</script>
