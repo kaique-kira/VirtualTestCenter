@@ -12,9 +12,8 @@
     "mustache-express": "^1.2.4"
   },
   "scripts": {
-    
-    "startf":"node frontend/main.js",
-    "startb":"node backend/main.js"
-   
+    "start": "concurrently \"npm run startb\" \"npm run startf\"",
+    "startf": "node frontend/main.js",
+    "startb": "node backend/main.js"
   }
 }
